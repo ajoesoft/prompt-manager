@@ -7,14 +7,12 @@ import {
   Info,
   Download,
   RotateCcw,
-  Layers,
-  Database,
-  Search,
   PlusCircle,
-  CheckCircle2,
-  HardDrive
+  HardDrive,
+  Languages
 } from 'lucide-react';
 import { ModelConfig } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface DesktopHeaderProps {
   modelConfig: ModelConfig;
@@ -35,6 +33,8 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
   onOpenImportModal,
   onResetPresets,
 }) => {
+  const { lang, setLang, toggleLang, t } = useLanguage();
+
   return (
     <header className="bg-white border-b border-slate-200 text-slate-800 select-none shadow-xs">
       {/* Desktop Window Controls Bar */}
@@ -47,9 +47,9 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
           </div>
           <div className="flex items-center space-x-1.5 text-slate-300 font-mono">
             <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-            <span className="font-semibold text-white tracking-tight">prompt-manager</span>
+            <span className="font-semibold text-white tracking-tight">{t('app.title')}</span>
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-400/30">
-              v1.2.0 · Tauri+Qwen3.5
+              {t('app.versionBadge')}
             </span>
           </div>
         </div>
@@ -59,13 +59,13 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
           {modelConfig.run_mode === 'local' ? (
             <div className="flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-medium">
               <Cpu className="w-3 h-3 text-emerald-400" />
-              <span>本地 llama.cpp 离线引擎 (Qwen3.5-9B-Q4_K_M + mmproj)</span>
+              <span>{t('header.localModeBadge')}</span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             </div>
           ) : (
             <div className="flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] font-medium">
               <Globe className="w-3 h-3 text-blue-400" />
-              <span>在线多模态 API 引擎 ({modelConfig.api_model || 'Gemini 3.7 Flash'})</span>
+              <span>{t('header.onlineModeBadge')} ({modelConfig.api_model || 'Gemini 3.7 Flash'})</span>
               <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
             </div>
           )}
@@ -75,7 +75,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
         <div className="flex items-center space-x-3 text-slate-400">
           <span className="flex items-center space-x-1 text-[11px]">
             <HardDrive className="w-3 h-3 text-slate-400" />
-            <span className="text-slate-300 font-mono">SQLite 已挂载 ({totalCount} 条)</span>
+            <span className="text-slate-300 font-mono">{t('header.sqliteStatus', { count: totalCount })}</span>
           </span>
         </div>
       </div>
@@ -88,7 +88,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
             className="flex items-center space-x-2 px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold shadow-sm transition"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>导入图片反推 (Single / Batch)</span>
+            <span>{t('header.importBtn')}</span>
           </button>
 
           <button
@@ -96,33 +96,59 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
             className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200 shadow-xs transition"
           >
             <Download className="w-3.5 h-3.5 text-slate-500" />
-            <span>导出数据集 (LoRA/CSV)</span>
+            <span>{t('header.exportBtn')}</span>
           </button>
 
           <button
             onClick={onResetPresets}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-600 text-xs border border-slate-200 shadow-xs transition"
-            title="加载精选多模态样例"
+            title={t('header.resetPresetsTitle')}
           >
             <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-            <span>重置预设样本</span>
+            <span>{t('header.resetPresetsBtn')}</span>
           </button>
         </div>
 
-        {/* Right Settings and Info */}
+        {/* Right Settings, Language Switcher and Info */}
         <div className="flex items-center space-x-2">
+          {/* Language Switcher Button */}
+          <div className="flex items-center bg-white rounded-lg border border-slate-200 p-0.5 shadow-2xs">
+            <button
+              onClick={() => setLang('zh')}
+              className={`px-2.5 py-1 rounded text-xs font-medium transition ${
+                lang === 'zh'
+                  ? 'bg-blue-600 text-white shadow-2xs font-semibold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+              title="切换为中文"
+            >
+              中
+            </button>
+            <button
+              onClick={() => setLang('en')}
+              className={`px-2.5 py-1 rounded text-xs font-medium transition ${
+                lang === 'en'
+                  ? 'bg-blue-600 text-white shadow-2xs font-semibold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+              title="Switch to English"
+            >
+              EN
+            </button>
+          </div>
+
           <button
             onClick={onOpenSettings}
             className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200 shadow-xs transition"
           >
             <Settings className="w-3.5 h-3.5 text-slate-500" />
-            <span>系统配置 & SKILL 规则</span>
+            <span>{t('header.settingsBtn')}</span>
           </button>
 
           <button
             onClick={onOpenAbout}
             className="p-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 shadow-xs transition"
-            title="关于本软件"
+            title={t('header.aboutBtn')}
           >
             <Info className="w-4 h-4 text-slate-500" />
           </button>
@@ -131,4 +157,5 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
     </header>
   );
 };
+
 

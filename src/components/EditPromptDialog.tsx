@@ -16,6 +16,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { HistoryItem, PromptModelTemplate, SkillResultJson } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface EditPromptDialogProps {
   item: HistoryItem | null;
@@ -32,6 +33,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
   onClose,
   onReassemble,
 }) => {
+  const { t } = useLanguage();
   if (!item) return null;
 
   const [activeTab, setActiveTab] = useState<'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5' | 'stage6'>('stage6');
@@ -109,10 +111,10 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
             </div>
             <div>
               <h3 className="font-semibold text-slate-900 text-sm">
-                单条反推详情检视与多维度编辑
+                {t('editDialog.title')}
               </h3>
               <p className="text-[11px] text-slate-500">
-                文件: {item.file_name} · 创建于 {item.create_at}
+                {t('editDialog.fileLabel')}: {item.file_name} · {t('editDialog.createdLabel')} {item.create_at}
               </p>
             </div>
           </div>
@@ -125,12 +127,12 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
               {saveSuccess ? (
                 <>
                   <CheckCircle2 className="w-4 h-4 text-emerald-300" />
-                  <span>已保存至 SQLite!</span>
+                  <span>{t('editDialog.savedSqlite')}</span>
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4" />
-                  <span>保存修改</span>
+                  <span>{t('editDialog.saveChanges')}</span>
                 </>
               )}
             </button>
@@ -161,23 +163,23 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
             <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-2 text-xs shadow-2xs">
               <div className="font-semibold text-slate-800 text-xs flex items-center space-x-1.5">
                 <Eye className="w-3.5 h-3.5 text-blue-600" />
-                <span>原图元数据</span>
+                <span>{t('editDialog.originalMeta')}</span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600">
-                <div>文件大小: {item.file_size_kb} KB</div>
-                <div>反推耗时: {item.execution_time_ms || 1800} ms</div>
-                <div>类型置信度: {(Number(skillJson.skill_01_image_type?.confidence || 0.95) * 100).toFixed(0)}%</div>
-                <div>格式: PNG/RGB 1024px</div>
+                <div>{t('editDialog.fileSize')}: {item.file_size_kb} KB</div>
+                <div>{t('editDialog.inferTime')}: {item.execution_time_ms || 1800} ms</div>
+                <div>{t('editDialog.confidence')}: {(Number(skillJson.skill_01_image_type?.confidence || 0.95) * 100).toFixed(0)}%</div>
+                <div>{t('editDialog.format')}: PNG/RGB 1024px</div>
               </div>
             </div>
 
             {/* Notes input */}
             <div className="space-y-1 text-xs">
-              <label className="text-slate-600 font-medium text-[11px]">自定义备注 (Notes):</label>
+              <label className="text-slate-600 font-medium text-[11px]">{t('editDialog.customNotes')}:</label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="记录反推灵感或特定出图 LoRA 配合方案..."
+                placeholder={t('editDialog.notesPlaceholder')}
                 className="w-full h-20 p-2.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 resize-none shadow-2xs"
               />
             </div>
@@ -195,7 +197,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
-                🎯 06. 最终提示词组装
+                🎯 {t('editDialog.tabFinal')}
               </button>
 
               <button
@@ -206,7 +208,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
-                📷 01. 类型分类
+                📷 {t('editDialog.tabStage1')}
               </button>
 
               <button
@@ -217,7 +219,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
-                🎨 02. 美术风格
+                🎨 {t('editDialog.tabStage2')}
               </button>
 
               <button
@@ -228,7 +230,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
-                💡 03. 灯光相机
+                💡 {t('editDialog.tabStage3')}
               </button>
 
               <button
@@ -239,7 +241,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
-                🎬 04. 画面主体
+                🎬 {t('editDialog.tabStage4')}
               </button>
 
               <button
@@ -250,7 +252,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                 }`}
               >
-                🔍 05. 细粒度微观
+                🔍 {t('editDialog.tabStage5')}
               </button>
             </div>
 
@@ -263,7 +265,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                   <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between flex-wrap gap-2">
                     <div className="flex items-center space-x-2">
                       <Bot className="w-4 h-4 text-blue-600" />
-                      <span className="text-xs font-semibold text-slate-800">切换目标生图模型:</span>
+                      <span className="text-xs font-semibold text-slate-800">{t('editDialog.switchTargetModel')}:</span>
                       <select
                         value={targetModel}
                         onChange={(e) => handleModelChange(e.target.value)}
@@ -280,10 +282,10 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     <button
                       onClick={handleManualReassemble}
                       className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-blue-700 text-xs font-medium border border-slate-200 shadow-2xs transition"
-                      title="根据前5阶段数据重新套用模板组装提示词"
+                      title={t('editDialog.reassembleTip')}
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
-                      <span>重新组装提示词</span>
+                      <span>{t('editDialog.reassembleBtn')}</span>
                     </button>
                   </div>
 
@@ -292,14 +294,14 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     <div className="flex items-center justify-between text-xs">
                       <label className="font-semibold text-slate-800 flex items-center space-x-1.5">
                         <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-                        <span>正向提示词 (Positive Prompt)</span>
+                        <span>{t('editDialog.positivePromptTitle')}</span>
                       </label>
                       <button
                         onClick={handleCopyPositive}
                         className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-[11px] font-medium text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition"
                       >
                         {copiedPos ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                        <span>{copiedPos ? '已复制' : '复制正向词'}</span>
+                        <span>{copiedPos ? t('editDialog.copied') : t('editDialog.copyPositive')}</span>
                       </button>
                     </div>
                     <textarea
@@ -314,14 +316,14 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs">
                       <label className="font-semibold text-rose-700 flex items-center space-x-1.5">
-                        <span>负向过滤词 (Negative Prompt)</span>
+                        <span>{t('editDialog.negativePromptTitle')}</span>
                       </label>
                       <button
                         onClick={handleCopyNegative}
                         className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-[11px] font-medium text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition"
                       >
                         {copiedNeg ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
-                        <span>{copiedNeg ? '已复制' : '复制负向词'}</span>
+                        <span>{copiedNeg ? t('editDialog.copied') : t('editDialog.copyNegative')}</span>
                       </button>
                     </div>
                     <textarea
@@ -339,7 +341,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                 <div className="space-y-3 text-xs">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-slate-600 font-medium block mb-1">主分类 (Image Type):</label>
+                      <label className="text-slate-600 font-medium block mb-1">{t('editDialog.mainCategory')}:</label>
                       <input
                         type="text"
                         value={skillJson.skill_01_image_type?.image_type || ''}
@@ -358,7 +360,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-slate-600 font-medium block mb-1">子分类 (Sub-Category):</label>
+                      <label className="text-slate-600 font-medium block mb-1">{t('editDialog.subCategory')}:</label>
                       <input
                         type="text"
                         value={skillJson.skill_01_image_type?.sub_category || ''}
@@ -379,7 +381,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-slate-600 font-medium block mb-1">特征标签 (Tags 逗号分隔):</label>
+                    <label className="text-slate-600 font-medium block mb-1">{t('editDialog.featureTags')}:</label>
                     <input
                       type="text"
                       value={(skillJson.skill_01_image_type?.tags || []).join(', ')}
@@ -404,7 +406,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
               {activeTab === 'stage2' && (
                 <div className="space-y-3 text-xs">
                   <div>
-                    <label className="text-slate-600 font-medium block mb-1">美术流派风格 (逗号分隔):</label>
+                    <label className="text-slate-600 font-medium block mb-1">{t('editDialog.artStyles')}:</label>
                     <input
                       type="text"
                       value={(skillJson.skill_02_image_style?.style || []).join(', ')}
@@ -424,7 +426,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-slate-600 font-medium block mb-1">视觉氛围 (Visual Mood):</label>
+                      <label className="text-slate-600 font-medium block mb-1">{t('editDialog.visualMood')}:</label>
                       <input
                         type="text"
                         value={skillJson.skill_02_image_style?.visual_mood || ''}
@@ -444,7 +446,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-slate-600 font-medium block mb-1">艺术表现媒介 (Medium):</label>
+                      <label className="text-slate-600 font-medium block mb-1">{t('editDialog.medium')}:</label>
                       <input
                         type="text"
                         value={skillJson.skill_02_image_style?.medium || ''}
@@ -470,7 +472,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
               {activeTab === 'stage3' && (
                 <div className="space-y-3 text-xs">
                   <div>
-                    <label className="text-slate-600 font-medium block mb-1">主光与光影质感 (Lighting):</label>
+                    <label className="text-slate-600 font-medium block mb-1">{t('editDialog.lighting')}:</label>
                     <input
                       type="text"
                       value={skillJson.skill_03_camera_param?.light || ''}
@@ -491,7 +493,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-slate-600 font-medium block mb-1">色彩倾向与色调 (Color Tone):</label>
+                    <label className="text-slate-600 font-medium block mb-1">{t('editDialog.colorTone')}:</label>
                     <input
                       type="text"
                       value={skillJson.skill_03_camera_param?.color_tone || ''}
@@ -513,7 +515,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-slate-600 font-medium block mb-1">推测摄影器材/镜头 (Camera):</label>
+                      <label className="text-slate-600 font-medium block mb-1">{t('editDialog.camera')}:</label>
                       <input
                         type="text"
                         value={skillJson.skill_03_camera_param?.camera || ''}
@@ -534,7 +536,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-slate-600 font-medium block mb-1">构图法则与透视 (Composition):</label>
+                      <label className="text-slate-600 font-medium block mb-1">{t('editDialog.composition')}:</label>
                       <input
                         type="text"
                         value={skillJson.skill_03_camera_param?.composition || ''}
@@ -561,7 +563,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
               {activeTab === 'stage4' && (
                 <div className="space-y-3 text-xs">
                   <div>
-                    <label className="text-slate-600 font-medium block mb-1">画面核心主体 (Subject):</label>
+                    <label className="text-slate-600 font-medium block mb-1">{t('editDialog.subject')}:</label>
                     <input
                       type="text"
                       value={skillJson.skill_04_scene_content?.subject || ''}
@@ -581,7 +583,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-slate-600 font-medium block mb-1">背景环境 (Background):</label>
+                    <label className="text-slate-600 font-medium block mb-1">{t('editDialog.background')}:</label>
                     <input
                       type="text"
                       value={skillJson.skill_04_scene_content?.background || ''}
@@ -601,7 +603,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                   </div>
 
                   <div>
-                    <label className="text-slate-600 font-medium block mb-1">动态交互动作 (Action):</label>
+                    <label className="text-slate-600 font-medium block mb-1">{t('editDialog.action')}:</label>
                     <input
                       type="text"
                       value={skillJson.skill_04_scene_content?.action || ''}
@@ -626,7 +628,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
               {activeTab === 'stage5' && (
                 <div className="space-y-3 text-xs">
                   <div>
-                    <label className="text-slate-600 font-medium block mb-1">微观肌理/材质细节 (Micro Details):</label>
+                    <label className="text-slate-600 font-medium block mb-1">{t('editDialog.microDetails')}:</label>
                     <textarea
                       value={skillJson.skill_05_detail_desc?.detail || ''}
                       onChange={(e) =>
@@ -646,7 +648,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-slate-600 font-medium block mb-1">隐匿情绪心境 (Emotion):</label>
+                      <label className="text-slate-600 font-medium block mb-1">{t('editDialog.emotion')}:</label>
                       <input
                         type="text"
                         value={skillJson.skill_05_detail_desc?.emotion || ''}
@@ -665,7 +667,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
                     </div>
 
                     <div>
-                      <label className="text-slate-600 font-medium block mb-1">服饰或道具特征 (Attire / Props):</label>
+                      <label className="text-slate-600 font-medium block mb-1">{t('editDialog.attireProps')}:</label>
                       <input
                         type="text"
                         value={skillJson.skill_05_detail_desc?.attire_or_props || ''}
@@ -693,4 +695,5 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
     </div>
   );
 };
+
 

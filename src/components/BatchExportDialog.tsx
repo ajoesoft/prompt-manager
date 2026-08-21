@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import JSZip from 'jszip';
 import { HistoryItem } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface BatchExportDialogProps {
   items: HistoryItem[];
@@ -20,6 +21,7 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
   items,
   onClose,
 }) => {
+  const { t } = useLanguage();
   const [exportFormat, setExportFormat] = useState<'lora_zip' | 'json' | 'csv' | 'markdown'>('lora_zip');
   const [isExporting, setIsExporting] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
@@ -44,14 +46,14 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
         const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
         downloadBlob(new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' }), `prompt_manager_export_${Date.now()}.csv`);
       } else if (exportFormat === 'markdown') {
-        let md = `# Prompt Manager 反推提示词导出报告\n\n生成时间: ${new Date().toLocaleString()}\n总计条数: ${items.length}\n\n---\n\n`;
+        let md = `# Prompt Manager Dataset Export Report\n\nGenerated At: ${new Date().toLocaleString()}\nTotal Count: ${items.length}\n\n---\n\n`;
         items.forEach((it, idx) => {
           md += `### ${idx + 1}. ${it.file_name} (${it.target_model})\n\n`;
-          md += `**正向提示词 (Positive Prompt):**\n\`\`\`\n${it.positive_prompt}\n\`\`\`\n\n`;
+          md += `**Positive Prompt:**\n\`\`\`\n${it.positive_prompt}\n\`\`\`\n\n`;
           if (it.negative_prompt) {
-            md += `**负向过滤词 (Negative Prompt):**\n\`\`\`\n${it.negative_prompt}\n\`\`\`\n\n`;
+            md += `**Negative Prompt:**\n\`\`\`\n${it.negative_prompt}\n\`\`\`\n\n`;
           }
-          md += `*类型*: ${it.skill_result_json.skill_01_image_type?.image_type || '通用'} | *风格*: ${(it.skill_result_json.skill_02_image_style?.style || []).join(', ')} | *时间*: ${it.create_at}\n\n---\n\n`;
+          md += `*Type*: ${it.skill_result_json.skill_01_image_type?.image_type || 'General'} | *Style*: ${(it.skill_result_json.skill_02_image_style?.style || []).join(', ')} | *Date*: ${it.create_at}\n\n---\n\n`;
         });
         downloadBlob(new Blob([md], { type: 'text/markdown;charset=utf-8;' }), `prompt_manager_export_${Date.now()}.md`);
       } else if (exportFormat === 'lora_zip') {
@@ -107,8 +109,8 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
               <Download className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-900 text-sm">批量导出提示词数据集</h3>
-              <p className="text-[11px] text-slate-500">已选 {items.length} 条反推记录</p>
+              <h3 className="font-semibold text-slate-900 text-sm">{t('export.title')}</h3>
+              <p className="text-[11px] text-slate-500">{t('export.selectedCount', { count: items.length })}</p>
             </div>
           </div>
 
@@ -120,7 +122,7 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
         {/* Content */}
         <div className="p-5 space-y-4 text-xs bg-white">
           <div className="space-y-2">
-            <label className="font-semibold text-slate-800 block">选择导出格式与结构:</label>
+            <label className="font-semibold text-slate-800 block">{t('export.selectFormat')}:</label>
 
             <div className="grid grid-cols-2 gap-2.5">
               <div
@@ -133,9 +135,9 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
               >
                 <div className="flex items-center space-x-2 font-semibold">
                   <Archive className="w-4 h-4 text-blue-600" />
-                  <span>LoRA 训练集 ZIP</span>
+                  <span>{t('export.loraZipTitle')}</span>
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1">成对的 .png + .txt 标注文件</p>
+                <p className="text-[10px] text-slate-500 mt-1">{t('export.loraZipDesc')}</p>
               </div>
 
               <div
@@ -148,9 +150,9 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
               >
                 <div className="flex items-center space-x-2 font-semibold">
                   <FileCode className="w-4 h-4 text-emerald-600" />
-                  <span>标准 JSON 结构</span>
+                  <span>{t('export.jsonTitle')}</span>
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1">包含 6 阶段完整多维解析</p>
+                <p className="text-[10px] text-slate-500 mt-1">{t('export.jsonDesc')}</p>
               </div>
 
               <div
@@ -163,9 +165,9 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
               >
                 <div className="flex items-center space-x-2 font-semibold">
                   <FileSpreadsheet className="w-4 h-4 text-amber-600" />
-                  <span>CSV 表格文件</span>
+                  <span>{t('export.csvTitle')}</span>
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1">适用于 Excel / 数据分析</p>
+                <p className="text-[10px] text-slate-500 mt-1">{t('export.csvDesc')}</p>
               </div>
 
               <div
@@ -178,9 +180,9 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
               >
                 <div className="flex items-center space-x-2 font-semibold">
                   <FileText className="w-4 h-4 text-sky-600" />
-                  <span>Markdown 文档</span>
+                  <span>{t('export.markdownTitle')}</span>
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1">排版优美，方便分享阅读</p>
+                <p className="text-[10px] text-slate-500 mt-1">{t('export.markdownDesc')}</p>
               </div>
             </div>
           </div>
@@ -192,7 +194,7 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
             onClick={onClose}
             className="px-4 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-xs font-medium shadow-2xs transition"
           >
-            取消
+            {t('export.cancel')}
           </button>
 
           <button
@@ -203,12 +205,12 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
             {downloadSuccess ? (
               <>
                 <CheckCircle2 className="w-4 h-4 text-emerald-300" />
-                <span>导出成功!</span>
+                <span>{t('export.exportSuccess')}</span>
               </>
             ) : (
               <>
                 <Download className="w-4 h-4" />
-                <span>{isExporting ? '打包生成中...' : '开始导出'}</span>
+                <span>{isExporting ? t('export.packing') : t('export.startExport')}</span>
               </>
             )}
           </button>
@@ -217,4 +219,5 @@ export const BatchExportDialog: React.FC<BatchExportDialogProps> = ({
     </div>
   );
 };
+
 

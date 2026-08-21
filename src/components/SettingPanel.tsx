@@ -35,6 +35,7 @@ import {
   ApiProfile,
   SqliteDatabaseInfo
 } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface SettingPanelProps {
   modelConfig: ModelConfig;
@@ -79,6 +80,7 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
   onResetPresets,
   onClose,
 }) => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'llama' | 'online_api' | 'sqlite' | 'skills' | 'prompts'>('llama');
 
   // Local draft of model config
@@ -251,14 +253,14 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h2 className="text-base font-bold text-slate-800">系统设置与运行时配置</h2>
+                <h2 className="text-base font-bold text-slate-800">{t('settings.title')}</h2>
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                   <Database className="w-3 h-3 mr-1" />
-                  SQLite3 持久化存储
+                  {t('settings.sqliteBadge')}
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                支持 llama.cpp 本地视觉多模态服务与在线 OpenAI/Gemini/百炼/Ollama API 端点配置与落盘
+                {t('settings.subtitle')}
               </p>
             </div>
           </div>
@@ -281,7 +283,7 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
             }`}
           >
             <Cpu className="w-4 h-4" />
-            <span>llama-server 本地配置</span>
+            <span>{t('settings.tabLlama')}</span>
             {cfg.run_mode === 'local' && (
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
             )}
@@ -296,7 +298,7 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
             }`}
           >
             <Globe className="w-4 h-4" />
-            <span>在线图反推 API 配置</span>
+            <span>{t('settings.tabOnline')}</span>
             {cfg.run_mode === 'online' && (
               <span className="w-2 h-2 rounded-full bg-blue-500"></span>
             )}
@@ -311,7 +313,7 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
             }`}
           >
             <Database className="w-4 h-4" />
-            <span>SQLite3 数据库管理</span>
+            <span>{t('settings.tabSqlite')}</span>
           </button>
 
           <button
@@ -323,7 +325,7 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>6阶段技能模板 (.skill YAML)</span>
+            <span>{t('settings.tabSkills')}</span>
           </button>
 
           <button
@@ -335,7 +337,7 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
             }`}
           >
             <Bot className="w-4 h-4" />
-            <span>生图模型语法预设</span>
+            <span>{t('settings.tabPrompts')}</span>
           </button>
         </div>
 

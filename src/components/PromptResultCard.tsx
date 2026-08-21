@@ -17,6 +17,7 @@ import {
   Maximize2
 } from 'lucide-react';
 import { HistoryItem } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface PromptResultCardProps {
   item: HistoryItem;
@@ -33,6 +34,7 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
   onToggleFavorite,
   onRerun,
 }) => {
+  const { t } = useLanguage();
   const [copiedPos, setCopiedPos] = useState(false);
   const [copiedNeg, setCopiedNeg] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -51,7 +53,7 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
     setTimeout(() => setCopiedNeg(false), 1800);
   };
 
-  const imageType = item.skill_result_json.skill_01_image_type?.image_type || '通用';
+  const imageType = item.skill_result_json.skill_01_image_type?.image_type || 'General';
   const confidence = item.skill_result_json.skill_01_image_type?.confidence || 0.95;
   const styles = item.skill_result_json.skill_02_image_style?.style || [];
   const cameraLight = item.skill_result_json.skill_03_camera_param?.light;
@@ -83,7 +85,7 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
               onToggleFavorite(item.id);
             }}
             className="absolute top-2 right-2 p-1.5 rounded-full bg-white/90 backdrop-blur-xs text-slate-400 hover:text-amber-500 border border-slate-200 shadow-2xs transition"
-            title={item.is_favorite ? '取消收藏' : '加入收藏'}
+            title={item.is_favorite ? t('card.unfavorite') : t('card.favorite')}
           >
             <Star
               className={`w-3.5 h-3.5 ${
@@ -95,7 +97,7 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
           {/* Bottom stats */}
           <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between text-[10px] text-slate-200 bg-slate-900/85 backdrop-blur-xs px-2 py-0.5 rounded">
             <span>{item.file_size_kb} KB</span>
-            <span className="text-emerald-300 font-mono font-medium">{(confidence * 100).toFixed(0)}% 置信</span>
+            <span className="text-emerald-300 font-mono font-medium">{t('card.confidence', { value: (confidence * 100).toFixed(0) })}</span>
           </div>
         </div>
 
@@ -122,16 +124,16 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
                 <button
                   onClick={() => onEdit(item)}
                   className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium border border-slate-200 transition"
-                  title="多维度结构化编辑"
+                  title={t('card.editBtn')}
                 >
                   <Edit3 className="w-3.5 h-3.5 text-blue-600" />
-                  <span>编辑反推</span>
+                  <span>{t('card.editBtn')}</span>
                 </button>
 
                 <button
                   onClick={() => onDelete(item.id)}
                   className="p-1.5 rounded-lg bg-slate-50 hover:bg-rose-50 hover:text-rose-600 text-slate-400 border border-slate-200 transition"
-                  title="删除此记录"
+                  title={t('card.deleteBtn')}
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -168,7 +170,7 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
               <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
                 <span className="text-blue-300 font-semibold flex items-center space-x-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-                  <span>正向提示词 (Positive Prompt)</span>
+                  <span>{t('card.positivePrompt')}</span>
                 </span>
                 <button
                   onClick={handleCopyPositive}
@@ -179,7 +181,7 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
                   }`}
                 >
                   {copiedPos ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                  <span>{copiedPos ? '已复制' : '复制'}</span>
+                  <span>{copiedPos ? t('card.copied') : t('card.copy')}</span>
                 </button>
               </div>
               <p className="text-xs text-slate-100 line-clamp-2 select-all font-mono leading-relaxed">
@@ -191,7 +193,7 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
             {item.negative_prompt && (
               <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-200 relative">
                 <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-0.5">
-                  <span className="font-semibold text-slate-600">负向过滤词 (Negative Prompt)</span>
+                  <span className="font-semibold text-slate-600">{t('card.negativePrompt')}</span>
                   <button
                     onClick={handleCopyNegative}
                     className={`flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] transition ${
@@ -199,7 +201,7 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
                     }`}
                   >
                     {copiedNeg ? <Check className="w-2.5 h-2.5 text-emerald-600" /> : <Copy className="w-2.5 h-2.5" />}
-                    <span>{copiedNeg ? '已复制' : '复制'}</span>
+                    <span>{copiedNeg ? t('card.copied') : t('card.copy')}</span>
                   </button>
                 </div>
                 <p className="text-[11px] text-slate-600 line-clamp-1 select-all font-mono">
@@ -212,14 +214,14 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
           {/* Expandable SKILL 6-Stage Details Accordion */}
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
             <div className="text-[11px] text-slate-400">
-              创建时间: {item.create_at}
+              {t('card.createdAt')}: {item.create_at}
             </div>
 
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="flex items-center space-x-1 text-[11px] font-medium text-blue-600 hover:text-blue-700 transition"
             >
-              <span>{isExpanded ? '收起 6 阶段详细析出' : '展开 6 阶段详细析出'}</span>
+              <span>{isExpanded ? t('card.collapseSkill') : t('card.expandSkill')}</span>
               {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
           </div>
@@ -232,18 +234,18 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
           {/* Stage 1 & 2 */}
           <div className="p-3 rounded-lg bg-white border border-slate-200 shadow-2xs space-y-1.5">
             <div className="font-semibold text-slate-800 text-[11px] flex items-center space-x-1 text-sky-700">
-              <span>01. 图像类型 & 02. 风格</span>
+              <span>{t('card.stage12Header')}</span>
             </div>
             <div className="text-slate-700 text-[11px]">
-              <span className="text-slate-400">子分类:</span>{' '}
+              <span className="text-slate-400">{t('card.subCategory')}:</span>{' '}
               {item.skill_result_json.skill_01_image_type?.sub_category || '标准'}
             </div>
             <div className="text-slate-700 text-[11px]">
-              <span className="text-slate-400">艺术媒介:</span>{' '}
+              <span className="text-slate-400">{t('card.medium')}:</span>{' '}
               {item.skill_result_json.skill_02_image_style?.medium || '摄影/数字绘画'}
             </div>
             <div className="text-slate-700 text-[11px]">
-              <span className="text-slate-400">视觉情绪:</span>{' '}
+              <span className="text-slate-400">{t('card.mood')}:</span>{' '}
               {item.skill_result_json.skill_02_image_style?.visual_mood || '无'}
             </div>
           </div>
@@ -251,18 +253,18 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
           {/* Stage 3 & 4 */}
           <div className="p-3 rounded-lg bg-white border border-slate-200 shadow-2xs space-y-1.5">
             <div className="font-semibold text-slate-800 text-[11px] flex items-center space-x-1 text-purple-700">
-              <span>03. 光影视角 & 04. 场景主体</span>
+              <span>{t('card.stage34Header')}</span>
             </div>
             <div className="text-slate-700 text-[11px] truncate">
-              <span className="text-slate-400">光照:</span>{' '}
+              <span className="text-slate-400">{t('card.lighting')}:</span>{' '}
               {cameraLight || '自然漫射光'}
             </div>
             <div className="text-slate-700 text-[11px] truncate">
-              <span className="text-slate-400">主体:</span>{' '}
+              <span className="text-slate-400">{t('card.subject')}:</span>{' '}
               {subject || '画面焦点'}
             </div>
             <div className="text-slate-700 text-[11px] truncate">
-              <span className="text-slate-400">背景:</span>{' '}
+              <span className="text-slate-400">{t('card.background')}:</span>{' '}
               {item.skill_result_json.skill_04_scene_content?.background || '环境'}
             </div>
           </div>
@@ -270,10 +272,10 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
           {/* Stage 5 & 6 */}
           <div className="p-3 rounded-lg bg-white border border-slate-200 shadow-2xs space-y-1.5">
             <div className="font-semibold text-slate-800 text-[11px] flex items-center space-x-1 text-emerald-700">
-              <span>05. 微观细节 & 06. 推荐参数</span>
+              <span>{t('card.stage56Header')}</span>
             </div>
             <div className="text-slate-700 text-[11px] line-clamp-2">
-              <span className="text-slate-400">材质/纹理:</span>{' '}
+              <span className="text-slate-400">{t('card.texture')}:</span>{' '}
               {item.skill_result_json.skill_05_detail_desc?.detail || '精细肌理'}
             </div>
             {item.skill_result_json.skill_06_prompt_generate?.suggested_params && (
@@ -294,4 +296,5 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
     </div>
   );
 };
+
 

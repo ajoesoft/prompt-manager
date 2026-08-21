@@ -12,6 +12,7 @@ import {
   Play
 } from 'lucide-react';
 import { PromptModelTemplate } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
 
 interface ImageDropzoneProps {
   promptTemplates: PromptModelTemplate[];
@@ -26,6 +27,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
   onStartAnalysis,
   onClose,
 }) => {
+  const { t } = useLanguage();
   const [selectedFiles, setSelectedFiles] = useState<{ dataUrl: string; name: string; size: number }[]>([]);
   const [targetModel, setTargetModel] = useState<string>(promptTemplates[0]?.model_name || 'Krea2 Turbo');
   const [isDragging, setIsDragging] = useState(false);
@@ -46,7 +48,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
     }
 
     if (validFiles.length === 0) {
-      setErrorMsg('请上传有效的图片格式 (PNG, JPG, WEBP, BMP)');
+      setErrorMsg(t('dropzone.invalidFormat'));
       return;
     }
 
@@ -116,8 +118,8 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             <UploadCloud className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900 text-sm">图片导入与多模态反推</h3>
-            <p className="text-xs text-slate-500">支持单图精细拆解或多图批量排队反推，基于 6 阶段 SKILL 流水线</p>
+            <h3 className="font-semibold text-slate-900 text-sm">{t('dropzone.title')}</h3>
+            <p className="text-xs text-slate-500">{t('dropzone.subtitle')}</p>
           </div>
         </div>
 
@@ -132,7 +134,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
       <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center space-x-2">
           <Sparkles className="w-4 h-4 text-amber-500" />
-          <span className="text-xs font-semibold text-slate-700">目标提示词模板语法:</span>
+          <span className="text-xs font-semibold text-slate-700">{t('dropzone.targetSyntax')}:</span>
         </div>
 
         <div className="flex items-center space-x-2">
@@ -180,9 +182,10 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
 
         <div>
           <p className="text-xs font-semibold text-slate-800">
-            拖拽图片至此处，或 <span className="text-blue-600 underline">点击浏览文件</span>
+            {t('dropzone.dragText')}{' '}
+            <span className="text-blue-600 underline">{t('dropzone.browseFiles')}</span>
           </p>
-          <p className="text-[11px] text-slate-500 mt-0.5">支持 PNG, JPG, WEBP · 支持单张或多图批量排队</p>
+          <p className="text-[11px] text-slate-500 mt-0.5">{t('dropzone.formatNote')}</p>
         </div>
       </div>
 
@@ -197,12 +200,12 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
       {selectedFiles.length > 0 && (
         <div className="mt-4 space-y-2">
           <div className="flex items-center justify-between text-xs text-slate-600 font-medium">
-            <span>待处理图片队列 ({selectedFiles.length} 张)</span>
+            <span>{t('dropzone.queueTitle', { count: selectedFiles.length })}</span>
             <button
               onClick={() => setSelectedFiles([])}
               className="text-rose-600 hover:text-rose-700 text-[11px] font-semibold"
             >
-              清空队列
+              {t('dropzone.clearQueue')}
             </button>
           </div>
 
@@ -238,7 +241,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
       {/* Preset Fast Testing Presets */}
       <div className="mt-4 pt-3 border-t border-slate-100">
         <div className="text-[11px] text-slate-500 mb-2 flex items-center justify-between">
-          <span>或快速体验预设场景样本:</span>
+          <span>{t('dropzone.quickPresets')}:</span>
         </div>
         <div className="flex flex-wrap gap-2">
           <button
@@ -251,7 +254,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             }
             className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs border border-slate-200 shadow-2xs transition font-medium"
           >
-            🤖 皮克斯 3D 机械人
+            🤖 3D Robot
           </button>
           <button
             type="button"
@@ -263,7 +266,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             }
             className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs border border-slate-200 shadow-2xs transition font-medium"
           >
-            🏙️ 赛博朋克霓虹雨夜
+            🏙️ Cyberpunk Neon
           </button>
           <button
             type="button"
@@ -275,7 +278,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             }
             className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs border border-slate-200 shadow-2xs transition font-medium"
           >
-            ❄️ 北欧胶片人像
+            ❄️ Nordic Portrait
           </button>
           <button
             type="button"
@@ -287,7 +290,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             }
             className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs border border-slate-200 shadow-2xs transition font-medium"
           >
-            🎨 宋代水墨仙山
+            🎨 Ink Landscape
           </button>
         </div>
       </div>
@@ -299,7 +302,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             onClick={onClose}
             className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition"
           >
-            取消
+            {t('dropzone.cancel')}
           </button>
         )}
         <button
@@ -314,12 +317,12 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
           {isAnalyzing ? (
             <>
               <div className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-              <span>SKILL 流水线执行中...</span>
+              <span>{t('dropzone.analyzing')}</span>
             </>
           ) : (
             <>
               <Play className="w-3.5 h-3.5 fill-current" />
-              <span>开始反推 ({selectedFiles.length} 张图片)</span>
+              <span>{t('dropzone.startAnalysis', { count: selectedFiles.length })}</span>
             </>
           )}
         </button>
@@ -327,4 +330,5 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
     </div>
   );
 };
+
 
