@@ -21,6 +21,14 @@
 
 - [💡 项目简介](#-项目简介)
 - [✨ 核心亮点](#-核心亮点)
+- [🖼️ 界面截图与功能预览](#️-界面截图与功能预览)
+  - [1. 主工作台与反推卡片](#1-主工作台与反推卡片)
+  - [2. 图片导入与批量反推](#2-图片导入与批量反推)
+  - [3. 多维分类导航与精准筛选](#3-多维分类导航与精准筛选)
+  - [4. LoRA 训练集与多格式批量导出](#4-lora-训练集与多格式批量导出)
+  - [5. 系统设置与 llama-server 本地加速](#5-系统设置与-llama-server-本地加速)
+  - [6. 在线 API 多端点与 SQLite3 数据库管理](#6-在线-api-多端点与-sqlite3-数据库管理)
+  - [7. 6 阶段技能模板与生图语法配置](#7-6-阶段技能模板与生图语法配置)
 - [🧩 6 阶段 SKILL 分解流水线](#-6-阶段-skill-分解流水线)
 - [🎯 多引擎语法模板支持](#-多引擎语法模板支持)
 - [📦 批量数据集与 LoRA 训练集导出](#-批量数据集与-lora-训练集导出)
@@ -57,6 +65,76 @@
 - 💾 **SQLite 本地持久化**：历史反推记录、自定义 SKILL 规则、模型配置与生图模板全部存储于本地数据库，支持模糊搜索、分类筛选、树形导航与快速复制。
 - 📦 **一键批量 LoRA 数据集打包**：支持将选中的反推结果一键导出为标准的 **LoRA 训练集压缩包 (`image.png` + `image.txt` 配对)**、JSON 结构体、CSV 表格或 Markdown 文档。
 - 🖥️ **专业现代化工作台 UI**：采用专业中性灰/深海蓝设计语言，内置可折叠侧边树形目录、实时阶段流水线监视器与多格式即时拷贝工具。
+
+---
+
+## 🖼️ 界面截图与功能预览
+
+### 1. 主工作台与反推卡片
+直观呈现高置信度提示词、负向过滤词、美术标签、摄影硬件参数与 6 阶段流水线详细展开。
+<div align="center">
+  <img src="./snapshot/main-ui.png" alt="主工作台界面" width="95%" />
+</div>
+
+<br/>
+
+### 2. 图片导入与批量反推
+支持拖拽图片、单图精细拆解、多图批量排队反推，并支持一键切换目标生图语法。
+<div align="center">
+  <img src="./snapshot/import-image.png" alt="图片导入与多模态反推" width="95%" />
+</div>
+
+<br/>
+
+### 3. 多维分类导航与精准筛选
+基于图片类型（3D渲染/电影截图/插画等）、艺术流派（赛博朋克/中国水墨/新黑色电影等）与目标模型的复合筛选系统。
+<div align="center">
+  <img src="./snapshot/main-image-filter.png" alt="多维分类与筛选" width="95%" />
+</div>
+
+<div align="center">
+  <img src="./snapshot/main-style-list.png" alt="风格标签筛选与多条件组合" width="95%" />
+</div>
+
+<br/>
+
+### 4. LoRA 训练集与多格式批量导出
+一键导出标准配对的 `.png` + `.txt` LoRA 训练压缩包 (ZIP)，亦支持标准 JSON 结构化数据、CSV 表格与 Markdown 排版文档。
+<div align="center">
+  <img src="./snapshot/main-import-prompt.png" alt="批量导出提示词数据集" width="95%" />
+</div>
+
+<br/>
+
+### 5. 系统设置与 llama-server 本地加速
+可视化配置 `llama.cpp` 本地守护进程，灵活调整 GPU 卸载层数 (`n_gpu_layers`)、CPU 线程数、上下文长度与即时连通性测试。
+<div align="center">
+  <img src="./snapshot/setting-llama-server.png" alt="llama-server 本地配置与硬件加速" width="95%" />
+</div>
+
+<br/>
+
+### 6. 在线 API 多端点与 SQLite3 数据库管理
+支持 Gemini、OpenAI、百炼通义千问、Ollama 等多服务商 API 预设保存与一键切换；内置 SQLite3 嵌入式数据库状态监控与维护。
+<div align="center">
+  <img src="./snapshot/setting-online-api.png" alt="在线图反推 API 多端点预设管理" width="95%" />
+</div>
+
+<div align="center">
+  <img src="./snapshot/setting-sqlite.png" alt="SQLite3 数据库引擎管理与状态监控" width="95%" />
+</div>
+
+<br/>
+
+### 7. 6 阶段技能模板与生图语法配置
+支持实时在线编辑、导入、导出 6 阶段 `.skill` YAML 规则，并可按需自定义不同生图模型的正向词拼接语法。
+<div align="center">
+  <img src="./snapshot/setting-skill.png" alt="6 阶段技能模板 YAML 编辑器" width="95%" />
+</div>
+
+<div align="center">
+  <img src="./snapshot/setting-prompt-type.png" alt="生图模型语法重组模板设置" width="95%" />
+</div>
 
 ---
 

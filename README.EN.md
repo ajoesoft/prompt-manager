@@ -21,6 +21,14 @@
 
 - [💡 Overview](#-overview)
 - [✨ Key Features](#-key-features)
+- [🖼️ Screenshots & Feature Preview](#️-screenshots--feature-preview)
+  - [1. Main Workspace & Deconstruction Cards](#1-main-workspace--deconstruction-cards)
+  - [2. Image Import & Batch Reverse Inference](#2-image-import--batch-reverse-inference)
+  - [3. Multi-Dimensional Navigation & Filter System](#3-multi-dimensional-navigation--filter-system)
+  - [4. LoRA Training Set & Multi-Format Batch Export](#4-lora-training-set--multi-format-batch-export)
+  - [5. llama-server Local Acceleration Settings](#5-llama-server-local-acceleration-settings)
+  - [6. Online API Profile Presets & SQLite3 Database Management](#6-online-api-profile-presets--sqlite3-database-management)
+  - [7. 6-Stage Skill Template Editor & Prompt Assembly](#7-6-stage-skill-template-editor--prompt-assembly)
 - [🧩 6-Stage SKILL Pipeline](#-6-stage-skill-pipeline)
 - [🎯 Multi-Engine Syntax Templates](#-multi-engine-syntax-templates)
 - [📦 Batch Dataset & LoRA Training Set Export](#-batch-dataset--lora-training-set-export)
@@ -57,6 +65,76 @@ Traditional single-pass image-to-prompt models often suffer from hallucination, 
 - 💾 **SQLite Local Persistence**: Auto-saves prompt history, custom `.skill` rules, and template configurations locally with instant search, categorisation, and tree navigation.
 - 📦 **One-Click LoRA Dataset Packaging**: Exports selected records into paired `.png` + `.txt` ZIP archives ready for Kohya_ss / LoRA training, alongside JSON, CSV, and Markdown exports.
 - 🖥️ **Modern Desktop UI**: Polished neutral light aesthetic with collapsible sidebar trees, interactive stage inspectors, and one-click clipboard helpers.
+
+---
+
+## 🖼️ Screenshots & Feature Preview
+
+### 1. Main Workspace & Deconstruction Cards
+Intuitive overview of high-confidence prompts, negative filter tokens, art style badges, camera hardware parameters, and expandable 6-stage deconstruction pipelines.
+<div align="center">
+  <img src="./snapshot/main-ui.png" alt="Main Workspace UI" width="95%" />
+</div>
+
+<br/>
+
+### 2. Image Import & Batch Reverse Inference
+Supports drag-and-drop uploads, single-image fine-grained breakdown, multi-image batch queues, and instant generation target syntax switching.
+<div align="center">
+  <img src="./snapshot/import-image.png" alt="Image Import & Multimodal Reverse Inference" width="95%" />
+</div>
+
+<br/>
+
+### 3. Multi-Dimensional Navigation & Filter System
+Composite classification and filtering based on image categories (3D Render, Film Stills, Illustration), art styles (Cyberpunk, Ink Wash, Neo-Noir), and generation models.
+<div align="center">
+  <img src="./snapshot/main-image-filter.png" alt="Multi-Dimensional Filtering" width="95%" />
+</div>
+
+<div align="center">
+  <img src="./snapshot/main-style-list.png" alt="Style List Filtering & Multi-Filter States" width="95%" />
+</div>
+
+<br/>
+
+### 4. LoRA Training Set & Multi-Format Batch Export
+One-click export of paired `.png` + `.txt` LoRA training archives (ZIP), structured JSON datasets, CSV tables, and Markdown reports.
+<div align="center">
+  <img src="./snapshot/main-import-prompt.png" alt="Batch Dataset Export" width="95%" />
+</div>
+
+<br/>
+
+### 5. llama-server Local Acceleration Settings
+Configure local `llama.cpp` daemon paths, host/port, GPU offloading layers (`n_gpu_layers`), CPU threads, context window, and perform live connection tests.
+<div align="center">
+  <img src="./snapshot/setting-llama-server.png" alt="llama-server Local Settings & GPU Offload" width="95%" />
+</div>
+
+<br/>
+
+### 6. Online API Profile Presets & SQLite3 Database Management
+Manage and switch multiple cloud API endpoints (Gemini 3.7, OpenAI GPT-4o, Qwen2.5-VL, Ollama) with SQLite3 storage, masked keys, and real-time database health metrics.
+<div align="center">
+  <img src="./snapshot/setting-online-api.png" alt="Online Vision API Profile Management" width="95%" />
+</div>
+
+<div align="center">
+  <img src="./snapshot/setting-sqlite.png" alt="SQLite3 Database Engine Status" width="95%" />
+</div>
+
+<br/>
+
+### 7. 6-Stage Skill Template Editor & Prompt Assembly
+Visual editor for 6-stage modular `.skill` YAML rules with live stage toggles, import/export capabilities, and syntax assembly template managers.
+<div align="center">
+  <img src="./snapshot/setting-skill.png" alt="6-Stage Skill YAML Editor" width="95%" />
+</div>
+
+<div align="center">
+  <img src="./snapshot/setting-prompt-type.png" alt="Prompt Assembly Template Settings" width="95%" />
+</div>
 
 ---
 

@@ -76,11 +76,26 @@ export interface HistoryItem {
   execution_time_ms?: number;
 }
 
+export interface ApiProfile {
+  id: string;
+  name: string;
+  provider: 'gemini' | 'openai_compatible' | 'ollama' | 'deepseek' | 'qwen_vl' | 'custom';
+  endpoint: string;
+  api_key: string;
+  model_name: string;
+  timeout_seconds: number;
+  description?: string;
+  custom_headers?: string;
+  is_active?: boolean;
+}
+
 export interface ModelConfig {
   id?: number;
   run_mode: 'local' | 'online';
-  // Local llama.cpp config
+  // Local llama.cpp / llama-server config
   llama_bin: string;
+  llama_host?: string;
+  llama_port?: number;
   main_gguf: string;
   mmproj_gguf: string;
   n_gpu_layers: number;
@@ -88,11 +103,33 @@ export interface ModelConfig {
   temperature: number;
   top_p: number;
   context_length: number;
+  batch_size?: number;
+  flash_attn?: boolean;
   // Online API config
+  api_provider?: 'gemini' | 'openai_compatible' | 'ollama' | 'deepseek' | 'qwen_vl' | 'custom';
   api_endpoint: string;
   api_key: string;
   api_model: string;
   timeout_seconds: number;
+  custom_headers?: string;
+  system_prompt_override?: string;
+  max_tokens?: number;
+  updated_at?: string;
+}
+
+export interface SqliteTableInfo {
+  name: string;
+  count: number;
+  description: string;
+}
+
+export interface SqliteDatabaseInfo {
+  db_file: string;
+  db_size_bytes: number;
+  sqlite_version: string;
+  tables: SqliteTableInfo[];
+  last_sync: string;
+  status: 'online' | 'connected' | 'syncing';
 }
 
 export interface SkillTemplate {

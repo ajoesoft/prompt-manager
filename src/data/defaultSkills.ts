@@ -308,6 +308,8 @@ export const DEFAULT_PROMPT_TEMPLATES: PromptModelTemplate[] = [
 export const DEFAULT_MODEL_CONFIG: ModelConfig = {
   run_mode: 'online', // Default to online for instant zero-config experience, with local llama.cpp toggle
   llama_bin: '/usr/local/bin/llama-server',
+  llama_host: '127.0.0.1',
+  llama_port: 8080,
   main_gguf: './models/Qwen3.5-9B-Q4_K_M.gguf',
   mmproj_gguf: './models/mmproj-F16.gguf',
   n_gpu_layers: 33,
@@ -315,8 +317,62 @@ export const DEFAULT_MODEL_CONFIG: ModelConfig = {
   temperature: 0.2,
   top_p: 0.9,
   context_length: 8192,
+  batch_size: 512,
+  flash_attn: true,
+  api_provider: 'gemini',
   api_endpoint: 'https://generativelanguage.googleapis.com/v1beta',
   api_key: '',
   api_model: 'gemini-3.7-flash',
-  timeout_seconds: 45
+  timeout_seconds: 45,
+  custom_headers: '{\n  "User-Agent": "PromptManager/1.2.0"\n}',
+  system_prompt_override: 'You are an expert AI vision analysis and prompt deconstruction engine. Analyze the input image and output a structured 6-stage reverse prompt breakdown.',
+  max_tokens: 2048,
+  updated_at: new Date().toISOString()
 };
+
+export const DEFAULT_API_PROFILES: import('../types').ApiProfile[] = [
+  {
+    id: 'profile_gemini_flash',
+    name: 'Google Gemini 3.7 Flash (官方推荐 / 极速)',
+    provider: 'gemini',
+    endpoint: 'https://generativelanguage.googleapis.com/v1beta',
+    api_key: '',
+    model_name: 'gemini-3.7-flash',
+    timeout_seconds: 30,
+    description: 'Google 最新一代多模态旗舰，图像细节解析敏锐，速度极快。',
+    is_active: true
+  },
+  {
+    id: 'profile_openai_gpt4o',
+    name: 'OpenAI GPT-4o Vision (兼容格式)',
+    provider: 'openai_compatible',
+    endpoint: 'https://api.openai.com/v1/chat/completions',
+    api_key: '',
+    model_name: 'gpt-4o',
+    timeout_seconds: 45,
+    description: '标准 OpenAI 兼容 Chat Completions 多模态反推端点。',
+    is_active: false
+  },
+  {
+    id: 'profile_qwen_vl',
+    name: '通义千问 Qwen2.5-VL-72B (阿里云百炼)',
+    provider: 'qwen_vl',
+    endpoint: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+    api_key: '',
+    model_name: 'qwen2.5-vl-72b-instruct',
+    timeout_seconds: 40,
+    description: '顶级中文与中西结合视觉理解模型，对国风水墨与二次元识别极佳。',
+    is_active: false
+  },
+  {
+    id: 'profile_ollama_local',
+    name: 'Ollama 本地视觉服务 (Llama-Vision / MiniCPM)',
+    provider: 'ollama',
+    endpoint: 'http://localhost:11434/v1/chat/completions',
+    api_key: 'ollama',
+    model_name: 'llama3.2-vision:11b',
+    timeout_seconds: 60,
+    description: '通过本地 Ollama 提供的兼容接口调用本地多模态模型。',
+    is_active: false
+  }
+];

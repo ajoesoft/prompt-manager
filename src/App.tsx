@@ -30,6 +30,8 @@ export default function App() {
     filteredHistory,
     categoryStats,
     modelConfig,
+    apiProfiles,
+    sqliteStats,
     skillTemplates,
     promptTemplates,
     filterRule,
@@ -46,6 +48,11 @@ export default function App() {
     clearAllHistory,
     resetToPresets,
     saveModelConfig,
+    saveApiProfile,
+    deleteApiProfile,
+    activateApiProfile,
+    refreshSqliteStats,
+    resetSqliteDatabase,
     updateSkillTemplate,
     toggleSkillEnable,
     updatePromptTemplate,
@@ -291,9 +298,16 @@ export default function App() {
       {showSettingsModal && (
         <SettingPanel
           modelConfig={modelConfig}
+          apiProfiles={apiProfiles}
+          sqliteStats={sqliteStats}
           skillTemplates={skillTemplates}
           promptTemplates={promptTemplates}
           onSaveModelConfig={saveModelConfig}
+          onSaveApiProfile={saveApiProfile}
+          onDeleteApiProfile={deleteApiProfile}
+          onActivateApiProfile={activateApiProfile}
+          onRefreshSqliteStats={refreshSqliteStats}
+          onResetSqliteDatabase={resetSqliteDatabase}
           onUpdateSkillTemplate={updateSkillTemplate}
           onToggleSkillEnable={toggleSkillEnable}
           onUpdatePromptTemplate={updatePromptTemplate}
