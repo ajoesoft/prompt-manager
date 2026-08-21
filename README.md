@@ -109,7 +109,7 @@ positive: "{type}, {style}, {scene}, detailed textures: {details}, shot on {came
 ### 2. 安装与运行
 ```bash
 # 1. 克隆项目
-git clone https://github.com/your-username/prompt-manager.git
+git clone https://github.com/ajoesoft/prompt-manager
 cd prompt-manager
 
 # 2. 安装依赖
@@ -206,7 +206,7 @@ Select multiple items in the history panel and click **Batch Export** to produce
 ### 2. Quick Setup
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/prompt-manager.git
+git clone https://github.com/ajoesoft/prompt-manager
 cd prompt-manager
 
 # Install dependencies

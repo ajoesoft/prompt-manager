@@ -111,7 +111,7 @@ positive: "A photograph of {scene}, captured in {style} style. The lighting is {
 ### 2. 安装与运行
 ```bash
 # 1. 克隆项目
-git clone https://github.com/your-username/prompt-manager.git
+git clone https://github.com/ajoesoft/prompt-manager
 cd prompt-manager
 
 # 2. 安装依赖

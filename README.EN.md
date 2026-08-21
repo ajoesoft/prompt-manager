@@ -111,7 +111,7 @@ Select multiple items in the history panel and click **Batch Export** to generat
 ### 2. Installation & Run
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/prompt-manager.git
+git clone https://github.com/ajoesoft/prompt-manager
 cd prompt-manager
 
 # 2. Install dependencies
