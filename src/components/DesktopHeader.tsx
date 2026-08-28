@@ -6,7 +6,6 @@ import {
   Settings,
   Info,
   Download,
-  RotateCcw,
   PlusCircle,
   HardDrive,
   Languages
@@ -21,7 +20,6 @@ interface DesktopHeaderProps {
   onOpenAbout: () => void;
   onOpenExport: () => void;
   onOpenImportModal: () => void;
-  onResetPresets: () => void;
 }
 
 export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
@@ -31,7 +29,6 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
   onOpenAbout,
   onOpenExport,
   onOpenImportModal,
-  onResetPresets,
 }) => {
   const { lang, setLang, toggleLang, t } = useLanguage();
 
@@ -97,15 +94,6 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
           >
             <Download className="w-3.5 h-3.5 text-slate-500" />
             <span>{t('header.exportBtn')}</span>
-          </button>
-
-          <button
-            onClick={onResetPresets}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-600 text-xs border border-slate-200 shadow-xs transition"
-            title={t('header.resetPresetsTitle')}
-          >
-            <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
-            <span>{t('header.resetPresetsBtn')}</span>
           </button>
         </div>
 

@@ -36,10 +36,11 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
   const { t } = useLanguage();
   if (!item) return null;
 
-  const [activeTab, setActiveTab] = useState<'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5' | 'stage6'>('stage6');
+  const [activeTab, setActiveTab] = useState<'report' | 'stage6' | 'stage1' | 'stage2' | 'stage3' | 'stage4' | 'stage5'>('report');
   const [targetModel, setTargetModel] = useState<string>(item.target_model);
   const [positivePrompt, setPositivePrompt] = useState<string>(item.positive_prompt);
   const [negativePrompt, setNegativePrompt] = useState<string>(item.negative_prompt);
+  const [formattedReport, setFormattedReport] = useState<string>(item.formatted_report || '');
   const [notes, setNotes] = useState<string>(item.notes || '');
 
   // Cloned editable skill result
@@ -47,12 +48,14 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
 
   const [copiedPos, setCopiedPos] = useState(false);
   const [copiedNeg, setCopiedNeg] = useState(false);
+  const [copiedRep, setCopiedRep] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   useEffect(() => {
     setTargetModel(item.target_model);
     setPositivePrompt(item.positive_prompt);
     setNegativePrompt(item.negative_prompt);
+    setFormattedReport(item.formatted_report || '');
     setNotes(item.notes || '');
     setSkillJson(JSON.parse(JSON.stringify(item.skill_result_json)));
   }, [item]);
@@ -89,6 +92,7 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
       target_model: targetModel,
       positive_prompt: positivePrompt,
       negative_prompt: negativePrompt,
+      formatted_report: formattedReport,
       notes: notes,
       skill_result_json: skillJson,
     };
@@ -190,6 +194,17 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
             {/* Stage Tabs Navigation */}
             <div className="flex items-center space-x-1.5 p-2.5 bg-slate-50 border-b border-slate-200 overflow-x-auto">
               <button
+                onClick={() => setActiveTab('report')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
+                  activeTab === 'report'
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                }`}
+              >
+                📋 {t('editDialog.tabReport')}
+              </button>
+
+              <button
                 onClick={() => setActiveTab('stage6')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition ${
                   activeTab === 'stage6'
@@ -258,6 +273,36 @@ export const EditPromptDialog: React.FC<EditPromptDialogProps> = ({
 
             {/* Tab Panes */}
             <div className="flex-1 overflow-y-auto p-5 space-y-4">
+              {/* TAB REPORT: COMPLETE VISUAL REPORT */}
+              {activeTab === 'report' && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <span className="text-xs text-slate-700 font-semibold">
+                      全阶段链式视觉分镜与光影参数分析报告（支持直接编辑与复制）
+                    </span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(formattedReport);
+                        setCopiedRep(true);
+                        setTimeout(() => setCopiedRep(false), 1800);
+                      }}
+                      className="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-blue-700 text-xs font-medium border border-slate-200 shadow-2xs transition"
+                    >
+                      {copiedRep ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedRep ? '已复制报告' : '复制分镜文本'}</span>
+                    </button>
+                  </div>
+
+                  <textarea
+                    value={formattedReport}
+                    onChange={(e) => setFormattedReport(e.target.value)}
+                    rows={18}
+                    className="w-full p-4 rounded-xl border border-slate-200 bg-slate-900 text-slate-100 font-sans text-xs leading-relaxed focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20 resize-none font-mono"
+                    placeholder="完整分镜与光影分析报告内容..."
+                  />
+                </div>
+              )}
+
               {/* TAB 6: PROMPT GENERATION */}
               {activeTab === 'stage6' && (
                 <div className="space-y-4">

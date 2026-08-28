@@ -112,6 +112,28 @@ Configure local `llama.cpp` daemon paths, host/port, GPU offloading layers (`n_g
   <img src="./snapshot/setting-llama-server.png" alt="llama-server Local Settings & GPU Offload" width="95%" />
 </div>
 
+> **💡 Recommended Qwen3.5-9B-Q4_K_M + llama-server Launch Command (Pattern Mismatch Fix & Memory Optimization):**
+> ```bash
+> llama-server \
+>   -m ./Qwen3.5-9B-Q4_K_M.gguf \
+>   --mmproj ./mmproj-F16.gguf \
+>   --jinja \
+>   --chat-template-kwargs '{"enable_thinking":false}' \
+>   -ngl 99 \
+>   -c 32768 \
+>   -fa on \
+>   --cache-type-k q8_0 \
+>   --cache-type-v q8_0 \
+>   --port 8080 \
+>   --host 0.0.0.0 \
+>   --parallel 1 \
+>   --temp 0.7 \
+>   --top-p 0.95 \
+>   --top-k 20 \
+>   --min-p 0.0
+> ```
+> *Note: `--chat-template-kwargs '{"enable_thinking":false}'` disables thinking tokens to eliminate pattern mismatch errors in structured JSON output; `--cache-type-k/v q8_0` with `-fa on` reduces 32k context VRAM footprint by 50%.*
+
 <br/>
 
 ### 6. Online API Profile Presets & SQLite3 Database Management
@@ -189,7 +211,7 @@ Select multiple items in the history panel and click **Batch Export** to generat
 ### 2. Installation & Run
 ```bash
 # 1. Clone the repository
-git clone https://github.com/ajoesoft/prompt-manager
+git clone https://github.com/your-username/prompt-manager.git
 cd prompt-manager
 
 # 2. Install dependencies

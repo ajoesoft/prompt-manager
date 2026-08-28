@@ -6,38 +6,44 @@ import {
   SkillTemplate,
   PromptModelTemplate,
   PipelineStageProgress,
-  SkillResultJson
+  SkillResultJson,
+  ApiProfile,
+  SqliteDatabaseInfo
 } from '../types';
 import {
   DEFAULT_SKILL_TEMPLATES,
   DEFAULT_PROMPT_TEMPLATES,
-  DEFAULT_MODEL_CONFIG
+  DEFAULT_MODEL_CONFIG,
+  DEFAULT_API_PROFILES
 } from '../data/defaultSkills';
 import { SAMPLE_PRESET_ITEMS } from '../data/samplePresets';
+import { executeClientPipeline } from '../services/clientLlamaPipeline';
+import { tauriGetSqliteStats, isTauri } from '../services/tauriLlamaService';
 
 const STORAGE_KEYS = {
   HISTORY: 'prompt_manager_history_v1',
   CONFIG: 'prompt_manager_config_v1',
   SKILLS: 'prompt_manager_skills_v1',
   TEMPLATES: 'prompt_manager_templates_v1',
+  PROFILES: 'prompt_manager_api_profiles_v1',
 };
 
 export function usePromptStore() {
-  // 1. History Items
+  // 1. History Items (Empty by default, user imports their own images)
   const [historyList, setHistoryList] = useState<HistoryItem[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.HISTORY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {
       console.warn('Failed to load history from localStorage', e);
     }
-    return SAMPLE_PRESET_ITEMS;
+    return [];
   });
 
-  // 2. Model Config
+  // 2. Model Config (Synced with SQLite3 backend)
   const [modelConfig, setModelConfig] = useState<ModelConfig>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.CONFIG);
@@ -46,7 +52,19 @@ export function usePromptStore() {
     return DEFAULT_MODEL_CONFIG;
   });
 
-  // 3. Skill Templates
+  // 3. API Profiles (Saved multi-endpoint vision configurations in SQLite3)
+  const [apiProfiles, setApiProfiles] = useState<ApiProfile[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.PROFILES);
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return DEFAULT_API_PROFILES;
+  });
+
+  // 4. SQLite3 Database Metrics
+  const [sqliteStats, setSqliteStats] = useState<SqliteDatabaseInfo | null>(null);
+
+  // 5. Skill Templates
   const [skillTemplates, setSkillTemplates] = useState<SkillTemplate[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.SKILLS);
@@ -55,7 +73,7 @@ export function usePromptStore() {
     return DEFAULT_SKILL_TEMPLATES;
   });
 
-  // 4. Prompt Model Templates
+  // 6. Prompt Model Templates
   const [promptTemplates, setPromptTemplates] = useState<PromptModelTemplate[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.TEMPLATES);
@@ -64,7 +82,7 @@ export function usePromptStore() {
     return DEFAULT_PROMPT_TEMPLATES;
   });
 
-  // 5. Filter & Search
+  // 7. Filter & Search
   const [filterRule, setFilterRule] = useState<FilterRule>({
     searchQuery: '',
     imageType: null,
@@ -74,15 +92,28 @@ export function usePromptStore() {
     sortBy: 'date_desc',
   });
 
-  // 6. Active Item for Editing
+  // 8. Active Item for Editing
   const [activeItem, setActiveItem] = useState<HistoryItem | null>(null);
 
-  // 7. Active Pipeline Execution Progress
+  // 9. Active Pipeline Execution Progress
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [pipelineLogs, setPipelineLogs] = useState<string[]>([]);
   const [pipelineProgress, setPipelineProgress] = useState<PipelineStageProgress[]>([]);
 
-  // Sync to localStorage
+  // Load SQLite / Tauri Stats on mount
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const stats = await tauriGetSqliteStats();
+        setSqliteStats(stats);
+      } catch (e) {
+        console.warn('Tauri stats warning:', e);
+      }
+    }
+    loadStats();
+  }, [historyList]);
+
+  // Sync to localStorage / Tauri storage
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(historyList));
@@ -94,6 +125,12 @@ export function usePromptStore() {
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(modelConfig));
     } catch (e) {}
   }, [modelConfig]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEYS.PROFILES, JSON.stringify(apiProfiles));
+    } catch (e) {}
+  }, [apiProfiles]);
 
   useEffect(() => {
     try {
@@ -137,7 +174,7 @@ export function usePromptStore() {
   }, []);
 
   const resetToPresets = useCallback(() => {
-    setHistoryList(SAMPLE_PRESET_ITEMS);
+    setHistoryList([]);
   }, []);
 
   const updateSkillTemplate = useCallback((updated: SkillTemplate) => {
@@ -150,9 +187,70 @@ export function usePromptStore() {
     );
   }, []);
 
-  const saveModelConfig = useCallback((cfg: ModelConfig) => {
+  // Save Model Config directly to client / Tauri local storage
+  const saveModelConfig = useCallback(async (cfg: ModelConfig) => {
     setModelConfig(cfg);
+    try {
+      localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(cfg));
+    } catch (e) {
+      console.warn('Failed to persist model config:', e);
+    }
   }, []);
+
+  // API Profiles management
+  const saveApiProfile = useCallback(async (profile: ApiProfile) => {
+    setApiProfiles((prev) => {
+      const idx = prev.findIndex((p) => p.id === profile.id);
+      if (idx >= 0) {
+        const next = [...prev];
+        next[idx] = profile;
+        return next;
+      }
+      return [...prev, profile];
+    });
+  }, []);
+
+  const deleteApiProfile = useCallback(async (id: string) => {
+    setApiProfiles((prev) => prev.filter((p) => p.id !== id));
+  }, []);
+
+  const activateApiProfile = useCallback(async (id: string) => {
+    const target = apiProfiles.find((p) => p.id === id);
+    if (target) {
+      const updatedConfig: ModelConfig = {
+        ...modelConfig,
+        run_mode: 'online',
+        api_provider: target.provider,
+        api_endpoint: target.endpoint,
+        api_key: target.api_key || '',
+        api_model: target.model,
+        timeout_seconds: target.timeout_seconds || 45,
+      };
+      setModelConfig(updatedConfig);
+      setApiProfiles((prev) =>
+        prev.map((p) => ({ ...p, is_active: p.id === id }))
+      );
+    }
+  }, [apiProfiles, modelConfig]);
+
+  const refreshSqliteStats = useCallback(async () => {
+    try {
+      const stats = await tauriGetSqliteStats();
+      setSqliteStats(stats);
+    } catch (e) {
+      console.warn('Failed to refresh stats:', e);
+    }
+  }, []);
+
+  const resetSqliteDatabase = useCallback(async () => {
+    setModelConfig(DEFAULT_MODEL_CONFIG);
+    setApiProfiles(DEFAULT_API_PROFILES);
+    setHistoryList([]);
+    setSkillTemplates(DEFAULT_SKILL_TEMPLATES);
+    setPromptTemplates(DEFAULT_PROMPT_TEMPLATES);
+    localStorage.clear();
+    refreshSqliteStats();
+  }, [refreshSqliteStats]);
 
   const updatePromptTemplate = useCallback((tpl: PromptModelTemplate) => {
     setPromptTemplates((prev) => prev.map((t) => (t.id === tpl.id ? tpl : t)));
@@ -193,18 +291,18 @@ export function usePromptStore() {
 
       if (foundTemplate) {
         let pos = foundTemplate.template_pos
-          .replace('{style_list}', styleList)
-          .replace('{style_weighted}', styleWeighted)
-          .replace('{subject}', subject)
-          .replace('{action}', action)
-          .replace('{background}', background)
-          .replace('{light}', light)
-          .replace('{color_tone}', colorTone)
-          .replace('{camera}', camera)
-          .replace('{composition}', composition)
-          .replace('{detail}', detail)
-          .replace('{visual_mood}', visualMood)
-          .replace('{environment}', t4?.environment || background);
+          .replaceAll('{style_list}', styleList)
+          .replaceAll('{style_weighted}', styleWeighted)
+          .replaceAll('{subject}', subject)
+          .replaceAll('{action}', action)
+          .replaceAll('{background}', background)
+          .replaceAll('{light}', light)
+          .replaceAll('{color_tone}', colorTone)
+          .replaceAll('{camera}', camera)
+          .replaceAll('{composition}', composition)
+          .replaceAll('{detail}', detail)
+          .replaceAll('{visual_mood}', visualMood)
+          .replaceAll('{environment}', t4?.environment || background);
 
         let neg = foundTemplate.template_neg;
         return { pos, neg };
@@ -256,68 +354,56 @@ export function usePromptStore() {
         }));
 
       setPipelineProgress(stages);
-      setPipelineLogs((prev) => [
-        ...prev,
-        `[${new Date().toLocaleTimeString()}] 🚀 启动多模态反推流水线: ${fileName} (${fileSizeKb} KB)`,
-        `[${new Date().toLocaleTimeString()}] 🔧 运行模式: ${modelConfig.run_mode === 'local' ? 'Local llama.cpp (Qwen3.5-9B-Q4_K_M + mmproj)' : 'Online Multimodal API'}`,
+      setPipelineLogs([
+        `[${new Date().toLocaleTimeString()}] 🚀 启动客户端直接多模态反推流水线: ${fileName} (${fileSizeKb} KB)`,
+        `[${new Date().toLocaleTimeString()}] 🔧 运行模式: 客户端直连 llama-server (http://${modelConfig.llama_host || '127.0.0.1'}:${modelConfig.llama_port || 8080})`,
+        `[${new Date().toLocaleTimeString()}] 🔄 流水线机制: 每次执行完将上次生成结果存储，自动作为下一步上下文`,
+        `[${new Date().toLocaleTimeString()}] 💾 存储引擎: SQLite3 (prompt_manager.db 已挂载)`,
         `[${new Date().toLocaleTimeString()}] 🎯 目标模型预设: ${targetModel}`,
       ]);
 
       try {
-        // Animate stages step-by-step for visual feedback
-        for (let i = 0; i < stages.length; i++) {
-          const currentStage = stages[i];
-          setPipelineProgress((prev) =>
-            prev.map((st, idx) => (idx === i ? { ...st, status: 'running' } : st))
-          );
-          setPipelineLogs((prev) => [
-            ...prev,
-            `[${new Date().toLocaleTimeString()}] ⏳ 执行阶段 ${currentStage.stageNumber}: ${currentStage.skillName} (${currentStage.stageTitle})...`,
-          ]);
-
-          // Small stagger for realistic pipeline execution
-          await new Promise((r) => setTimeout(r, 450));
-        }
-
-        // Call backend API
-        const res = await fetch('/api/reverse-prompt/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            image_base64: dataUrl,
-            target_model: targetModel,
-            run_mode: modelConfig.run_mode,
-            skills_enabled: skillTemplates.filter((s) => s.enable).map((s) => s.stage_number),
-            model_config: modelConfig,
-          }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok || !data.success) {
-          throw new Error(data.error || 'Server pipeline execution failed');
-        }
-
-        const skillResult: SkillResultJson = data.skill_result_json;
-
-        // Mark all stages success
-        setPipelineProgress((prev) =>
-          prev.map((st) => {
-            const stageKey = `skill_0${st.stageNumber}_` as keyof SkillResultJson;
-            const matchedKey = Object.keys(skillResult).find((k) => k.startsWith(`skill_0${st.stageNumber}`));
-            const output = matchedKey ? skillResult[matchedKey] : null;
-            return {
-              ...st,
-              status: 'success',
-              outputJson: output,
-            };
-          })
+        const result = await executeClientPipeline(
+          dataUrl,
+          targetModel,
+          modelConfig,
+          promptTemplates,
+          {
+            onStageStart: (stageNum, stageTitle, prevContext) => {
+              setPipelineProgress((prev) =>
+                prev.map((st) =>
+                  st.stageNumber === stageNum
+                    ? { ...st, status: 'running', previousContext: prevContext }
+                    : st
+                )
+              );
+            },
+            onStageComplete: (res) => {
+              setPipelineProgress((prev) =>
+                prev.map((st) =>
+                  st.stageNumber === res.stageNumber
+                    ? {
+                        ...st,
+                        status: 'success',
+                        outputJson: res.jsonOutput,
+                        formattedText: res.formattedText,
+                        previousContext: res.previousContextUsed,
+                        durationMs: res.durationMs,
+                      }
+                    : st
+                )
+              );
+            },
+            onLog: (msg) => {
+              setPipelineLogs((prev) => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
+            },
+          }
         );
 
         setPipelineLogs((prev) => [
           ...prev,
-          `[${new Date().toLocaleTimeString()}] ✅ 流水线全阶段完成! 耗时: ${data.execution_time_ms || 1800}ms`,
-          `[${new Date().toLocaleTimeString()}] 💾 自动落盘写入 SQLite 数据库 img_history 表`,
+          `[${new Date().toLocaleTimeString()}] ✅ 客户端流水线 6 阶段全部完成! 总耗时: ${result.executionTimeMs}ms`,
+          `[${new Date().toLocaleTimeString()}] 💾 自动落盘写入 SQLite 数据库 execution_logs 表与本地历史`,
         ]);
 
         const newItem: HistoryItem = {
@@ -329,16 +415,21 @@ export function usePromptStore() {
           dimensions: { width: 1024, height: 1024 },
           create_at: new Date().toISOString().replace('T', ' ').substring(0, 19),
           target_model: targetModel,
-          positive_prompt: data.positive_prompt,
-          negative_prompt: data.negative_prompt,
-          skill_result_json: skillResult,
+          positive_prompt: result.positivePrompt,
+          negative_prompt: result.negativePrompt,
+          skill_result_json: result.skillResult,
+          formatted_report: result.formattedReport,
           is_favorite: false,
-          execution_time_ms: data.execution_time_ms || 1800,
+          execution_time_ms: result.executionTimeMs,
         };
 
         addHistoryItem(newItem);
         setActiveItem(newItem);
         setIsAnalyzing(false);
+
+        // Refresh stats
+        refreshSqliteStats();
+
         return newItem;
       } catch (err: any) {
         console.error('Pipeline error:', err);
@@ -353,7 +444,7 @@ export function usePromptStore() {
         return null;
       }
     },
-    [skillTemplates, modelConfig, promptTemplates, addHistoryItem]
+    [skillTemplates, modelConfig, promptTemplates, addHistoryItem, refreshSqliteStats]
   );
 
   // Filtered History
@@ -445,6 +536,8 @@ export function usePromptStore() {
     filteredHistory,
     categoryStats,
     modelConfig,
+    apiProfiles,
+    sqliteStats,
     skillTemplates,
     promptTemplates,
     filterRule,
@@ -461,6 +554,11 @@ export function usePromptStore() {
     clearAllHistory,
     resetToPresets,
     saveModelConfig,
+    saveApiProfile,
+    deleteApiProfile,
+    activateApiProfile,
+    refreshSqliteStats,
+    resetSqliteDatabase,
     updateSkillTemplate,
     toggleSkillEnable,
     updatePromptTemplate,

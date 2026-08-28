@@ -71,6 +71,7 @@ export interface HistoryItem {
   positive_prompt: string;
   negative_prompt: string;
   skill_result_json: SkillResultJson;
+  formatted_report?: string;
   is_favorite?: boolean;
   notes?: string;
   execution_time_ms?: number;
@@ -175,5 +176,7 @@ export interface PipelineStageProgress {
   status: 'pending' | 'running' | 'success' | 'error' | 'skipped';
   durationMs?: number;
   outputJson?: any;
+  formattedText?: string;
+  previousContext?: string;
   error?: string;
 }

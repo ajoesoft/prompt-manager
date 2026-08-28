@@ -63,7 +63,7 @@
 
 ```bash
 # 1. Clone the repository / 克隆项目
-git clone https://github.com/ajoesoft/prompt-manager
+git clone https://github.com/your-username/prompt-manager.git
 cd prompt-manager
 
 # 2. Install dependencies / 安装依赖
@@ -74,6 +74,25 @@ cp .env.example .env
 
 # 4. Start the development server / 启动开发环境
 npm run dev
+
+# 5. (Optional / 可选) Launch local llama-server with Qwen3.5-9B-Q4_K_M:
+llama-server \
+  -m ./Qwen3.5-9B-Q4_K_M.gguf \
+  --mmproj ./mmproj-F16.gguf \
+  --jinja \
+  --chat-template-kwargs '{"enable_thinking":false}' \
+  -ngl 99 \
+  -c 32768 \
+  -fa on \
+  --cache-type-k q8_0 \
+  --cache-type-v q8_0 \
+  --port 8080 \
+  --host 0.0.0.0 \
+  --parallel 1 \
+  --temp 0.7 \
+  --top-p 0.95 \
+  --top-k 20 \
+  --min-p 0.0
 ```
 
 Visit `http://localhost:3000` in your browser.

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePromptStore } from './store/promptStore';
 import { DesktopHeader } from './components/DesktopHeader';
 import { SideCollapseTree } from './components/SideCollapseTree';
@@ -10,6 +10,7 @@ import { SettingPanel } from './components/SettingPanel';
 import { BatchExportDialog } from './components/BatchExportDialog';
 import { AboutDialog } from './components/AboutDialog';
 import { useLanguage } from './i18n/LanguageContext';
+import { listenTauriDragDrop } from './services/tauriLlamaService';
 import {
   UploadCloud,
   Layers,
@@ -48,7 +49,6 @@ export default function App() {
     deleteHistoryItem,
     toggleFavorite,
     clearAllHistory,
-    resetToPresets,
     saveModelConfig,
     saveApiProfile,
     deleteApiProfile,
@@ -72,6 +72,22 @@ export default function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
+  // Listen for native Tauri drag-and-drop events at root level (Ubuntu Linux / GTK Webview)
+  useEffect(() => {
+    let unlistenFn: (() => void) | null = null;
+    listenTauriDragDrop((paths) => {
+      if (paths && paths.length > 0) {
+        setShowImportModal(true);
+      }
+    }).then((cleanup) => {
+      unlistenFn = cleanup;
+    });
+
+    return () => {
+      if (unlistenFn) unlistenFn();
+    };
+  }, []);
+
   // Handle batch queue or single run from dropzone
   const handleStartAnalysis = async (
     files: { dataUrl: string; name: string; size: number }[],
@@ -94,8 +110,31 @@ export default function App() {
     );
   };
 
+  const handleWindowDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = 'copy';
+    }
+  };
+
+  const handleWindowDrop = (e: React.DragEvent) => {
+    if (!showImportModal) {
+      if (
+        (e.dataTransfer.files && e.dataTransfer.files.length > 0) ||
+        (e.dataTransfer.types && e.dataTransfer.types.includes('Files'))
+      ) {
+        e.preventDefault();
+        setShowImportModal(true);
+      }
+    }
+  };
+
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#F8FAFC] text-slate-900 font-sans overflow-hidden select-none">
+    <div
+      onDragOver={handleWindowDragOver}
+      onDrop={handleWindowDrop}
+      className="flex flex-col h-screen w-screen bg-[#F8FAFC] text-slate-900 font-sans overflow-hidden select-none"
+    >
       {/* Top Desktop Window Bar & Header */}
       <DesktopHeader
         modelConfig={modelConfig}
@@ -104,7 +143,6 @@ export default function App() {
         onOpenAbout={() => setShowAboutModal(true)}
         onOpenExport={() => setShowExportModal(true)}
         onOpenImportModal={() => setShowImportModal(true)}
-        onResetPresets={resetToPresets}
       />
 
       {/* Main Workspace Area (Sidebar + Content) */}
@@ -224,6 +262,7 @@ export default function App() {
                   <PromptResultCard
                     key={item.id}
                     item={item}
+                    layoutMode={viewMode}
                     onEdit={setActiveItem}
                     onDelete={deleteHistoryItem}
                     onToggleFavorite={toggleFavorite}
@@ -316,7 +355,6 @@ export default function App() {
           onAddPromptTemplate={addPromptTemplate}
           onDeletePromptTemplate={deletePromptTemplate}
           onClearHistory={clearAllHistory}
-          onResetPresets={resetToPresets}
           onClose={() => setShowSettingsModal(false)}
         />
       )}

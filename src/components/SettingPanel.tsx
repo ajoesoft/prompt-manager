@@ -26,7 +26,11 @@ import {
   Play,
   RefreshCw,
   Clock,
-  ShieldCheck
+  ShieldCheck,
+  Copy,
+  Terminal,
+  Info,
+  HelpCircle
 } from 'lucide-react';
 import {
   ModelConfig,
@@ -36,6 +40,7 @@ import {
   SqliteDatabaseInfo
 } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
+import { tauriTestConnection, isTauri, tauriGetSystemInfo } from '../services/tauriLlamaService';
 
 interface SettingPanelProps {
   modelConfig: ModelConfig;
@@ -55,7 +60,6 @@ interface SettingPanelProps {
   onAddPromptTemplate: (tpl: PromptModelTemplate) => void;
   onDeletePromptTemplate: (id: string) => void;
   onClearHistory: () => void;
-  onResetPresets: () => void;
   onClose: () => void;
 }
 
@@ -77,7 +81,6 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
   onAddPromptTemplate,
   onDeletePromptTemplate,
   onClearHistory,
-  onResetPresets,
   onClose,
 }) => {
   const { t } = useLanguage();
@@ -107,6 +110,7 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
   const [saveSuccessNotice, setSaveSuccessNotice] = useState(false);
 
   // New API Profile Modal State
+  const [copiedCli, setCopiedCli] = useState(false);
   const [showNewProfileModal, setShowNewProfileModal] = useState(false);
   const [newProfileName, setNewProfileName] = useState('');
   const [newProfileProvider, setNewProfileProvider] = useState<'gemini' | 'openai_compatible' | 'ollama' | 'deepseek' | 'qwen_vl' | 'custom'>('openai_compatible');
@@ -123,18 +127,13 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
   const [newPromptPos, setNewPromptPos] = useState('{style_list}, {subject}, {action}, in {background}, {light}, 8k');
   const [newPromptNeg, setNewPromptNeg] = useState('blurry, low quality');
 
-  // Test connection handler
+  // Test connection handler using Tauri IPC or client direct bridge
   const handleTestConnection = async (overrideParams?: Partial<ModelConfig>) => {
     setIsTestingConn(true);
     setConnTestResult(null);
     try {
       const payload = { ...cfg, ...overrideParams };
-      const res = await fetch('/api/system/test-connection', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
+      const data = await tauriTestConnection(payload);
       if (data.success) {
         setConnTestResult({
           success: true,
@@ -151,7 +150,7 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
     } catch (e: any) {
       setConnTestResult({
         success: false,
-        message: `网络通讯异常: ${e.message}`,
+        message: `通讯异常: ${e.message}`,
       });
     } finally {
       setIsTestingConn(false);
@@ -555,6 +554,87 @@ export const SettingPanel: React.FC<SettingPanelProps> = ({
                       onChange={(e) => setCfg({ ...cfg, top_p: parseFloat(e.target.value) || 0.9 })}
                       className="w-full px-3 py-2 text-xs font-mono bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-hidden"
                     />
+                  </div>
+                </div>
+              </div>
+
+              {/* Llama-server CLI Launch Command & Troubleshooting Card */}
+              <div className="p-5 rounded-xl bg-slate-900 text-slate-100 shadow-sm border border-slate-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Terminal className="w-4 h-4 text-emerald-400" />
+                    <span className="text-xs font-bold text-slate-100">
+                      Qwen3.5-9B-Q4_K_M + llama-server 启动命令 (已修复模式匹配报错)
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const cmd = `llama-server \\
+-m ${cfg.main_gguf || './Qwen3.5-9B-Q4_K_M.gguf'} \\
+--mmproj ${cfg.mmproj_gguf || './mmproj-F16.gguf'} \\
+--jinja \\
+--chat-template-kwargs '{"enable_thinking":false}' \\
+-ngl 99 \\
+-c 32768 \\
+-fa on \\
+--cache-type-k q8_0 \\
+--cache-type-v q8_0 \\
+--port ${cfg.llama_port || 8080} \\
+--host 0.0.0.0 \\
+--parallel 1 \\
+--temp 0.7 \\
+--top-p 0.95 \\
+--top-k 20 \\
+--min-p 0.0`;
+                      navigator.clipboard.writeText(cmd);
+                      setCopiedCli(true);
+                      setTimeout(() => setCopiedCli(false), 2500);
+                    }}
+                    className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono flex items-center space-x-1.5 transition border border-slate-700"
+                  >
+                    {copiedCli ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-400">已复制命令</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-slate-400" />
+                        <span>一键复制启动命令</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <pre className="p-3 bg-black/60 rounded-lg text-[11px] font-mono text-emerald-300/90 overflow-x-auto leading-relaxed border border-slate-800/80">
+{`llama-server \\
+-m ${cfg.main_gguf || './Qwen3.5-9B-Q4_K_M.gguf'} \\
+--mmproj ${cfg.mmproj_gguf || './mmproj-F16.gguf'} \\
+--jinja \\
+--chat-template-kwargs '{"enable_thinking":false}' \\
+-ngl 99 \\
+-c 32768 \\
+-fa on \\
+--cache-type-k q8_0 \\
+--cache-type-v q8_0 \\
+--port ${cfg.llama_port || 8080} \\
+--host 0.0.0.0 \\
+--parallel 1 \\
+--temp 0.7 \\
+--top-p 0.95 \\
+--top-k 20 \\
+--min-p 0.0`}
+                </pre>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px] text-slate-400 pt-1">
+                  <div className="flex items-start space-x-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                    <span><strong className="text-slate-200">--chat-template-kwargs:</strong> 禁用思考链输出，彻底消除模式匹配异常</span>
+                  </div>
+                  <div className="flex items-start space-x-1.5">
+                    <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                    <span><strong className="text-slate-200">--cache-type-k/v q8_0 + -fa on:</strong> 32k 上下文显存占用降低 50%</span>
                   </div>
                 </div>
               </div>

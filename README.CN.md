@@ -112,6 +112,28 @@
   <img src="./snapshot/setting-llama-server.png" alt="llama-server 本地配置与硬件加速" width="95%" />
 </div>
 
+> **💡 Qwen3.5-9B-Q4_K_M + llama-server 推荐启动命令（已修复流水线模式匹配报错与长上下文优化）：**
+> ```bash
+> llama-server \
+>   -m ./Qwen3.5-9B-Q4_K_M.gguf \
+>   --mmproj ./mmproj-F16.gguf \
+>   --jinja \
+>   --chat-template-kwargs '{"enable_thinking":false}' \
+>   -ngl 99 \
+>   -c 32768 \
+>   -fa on \
+>   --cache-type-k q8_0 \
+>   --cache-type-v q8_0 \
+>   --port 8080 \
+>   --host 0.0.0.0 \
+>   --parallel 1 \
+>   --temp 0.7 \
+>   --top-p 0.95 \
+>   --top-k 20 \
+>   --min-p 0.0
+> ```
+> *特别说明：`--chat-template-kwargs '{"enable_thinking":false}'` 可禁用推理思考链输出，避免 `<think>` 标签导致模式匹配报错；`--cache-type-k/v q8_0` 与 `-fa on` 可大幅降低 32k 上下文显存占用。*
+
 <br/>
 
 ### 6. 在线 API 多端点与 SQLite3 数据库管理
@@ -189,7 +211,7 @@ positive: "A photograph of {scene}, captured in {style} style. The lighting is {
 ### 2. 安装与运行
 ```bash
 # 1. 克隆项目
-git clone https://github.com/ajoesoft/prompt-manager
+git clone https://github.com/your-username/prompt-manager.git
 cd prompt-manager
 
 # 2. 安装依赖

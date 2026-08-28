@@ -73,7 +73,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     let result = current;
     if (params) {
       Object.entries(params).forEach(([k, v]) => {
-        result = result.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+        result = result.split(`{${k}}`).join(String(v));
       });
     }
 

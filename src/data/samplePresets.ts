@@ -2,6 +2,97 @@ import { HistoryItem } from '../types';
 
 export const SAMPLE_PRESET_ITEMS: HistoryItem[] = [
   {
+    id: 'sample_00_portrait',
+    origin_path: '/samples/neoclassical_portrait_blonde_woman.png',
+    thumb_path: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+    file_name: 'neoclassical_portrait_cinema.png',
+    file_size_kb: 1860,
+    dimensions: { width: 1024, height: 1365 },
+    create_at: '2026-08-22 10:15:30',
+    target_model: 'SDXL 1.0',
+    positive_prompt: '(masterpiece, best quality, ultra-detailed:1.2), (neoclassical portrait photography:1.2), (cinematic realism:1.3), a young woman with blonde hair tied up, light blue eyes, serene yet slightly melancholy expression, lips parted, gazing towards right, beige off-shoulder top, shot on ARRI Alexa Mini LF, Kodak Portra 800, 85mm portrait lens, f/1.4 aperture, rule of thirds, eye-level slight low angle, foreground bokeh guide, soft diffused facial lighting, gentle fill light, subtle rim light, warm creamy tones with subtle cool blue accents, muted Morandi warm grey, ultra delicate skin texture, shallow depth of field, 8k uhd, photorealistic',
+    negative_prompt: 'blurry, low quality, distortion, cartoon, 3d, bad anatomy, bad hands, deformed limbs, watermark, text, flat lighting, high saturation',
+    is_favorite: true,
+    execution_time_ms: 1920,
+    notes: '标准流水线反推样例：含光影、色调、机位、景深与五维分镜拆解',
+    formatted_report: `因此，主分类为：人物
+
+最终分类：真人写实（艺术化方向） / 新古典主义肖像摄影（风格归属）
+
+
+Light: 柔和漫射面光 + 微弱填充光 + 极轻轮廓光
+Color Tone: 暖奶油主调 + 冷蓝点缀 / 莫兰迪低饱和暖灰
+Camera: ARRI Alexa Mini LF / Kodak Portra 800
+Composition: 三分法 + 平视微仰角 + 前景虚化引导
+Lens Focal: 85mm 人像大光圈
+Aperture: f/1.4 极致浅景深
+
+
+
+🎬 Subject（核心主体）
+一位年轻女性，金发盘起，浅蓝眼眸，面部表情沉静而略带忧郁，嘴唇微启，正凝视画面右侧人物。她身穿米色露肩上衣，颈部线条清晰，皮肤质感细腻，是画面绝对视觉焦点。
+
+🌄 Background（背景环境与远景建筑/气候）
+背景完全虚化，呈现暖黄色调的模糊色块，无法辨识具体建筑或环境，但营造出室内柔和光线的氛围。无明确地标、家具或自然元素，仅以抽象色块强化人物情绪与空间纵深感。
+
+🌀 Action（主体的动态姿态与交互动作）
+女性处于静态凝视状态，头部微微侧向右方，目光聚焦于画面外右侧人物（仅可见其蓝色衣袖轮廓）。嘴唇微张，似在倾听或即将回应，形成无声的情感对话。整体姿态优雅内敛，传递出专注、期待或轻微不安的情绪张力。
+
+🖼️ Foreground（前景遮挡物或视线引导元素）
+画面右下角有一块深蓝色布料（推测为另一人物衣物），呈虚化状态，作为前景遮挡物，不仅增加画面层次，也引导观众视线向中心女性集中，并暗示“对话对象”的存在，强化互动关系。
+
+🌍 Environment（宏观世界观环境设定）
+未明确指定具体世界观，但从光影、服饰、妆容及构图风格判断，属于“现代都市室内场景”或“浪漫剧情片特写镜头”。整体氛围偏向温情、私密、情感浓烈，适合爱情、家庭或心理剧情类影视作品。
+
+最后结果。`,
+    skill_result_json: {
+      skill_01_image_type: {
+        image_type: '人物',
+        confidence: 0.98,
+        sub_category: '真人写实（艺术化方向） / 新古典主义肖像摄影（风格归属）',
+        tags: ['真人写实', '肖像摄影', '新古典主义', '艺术质感']
+      },
+      skill_02_image_style: {
+        style: ['真人写实', '新古典主义肖像', '胶片摄影'],
+        style_weight: [0.70, 0.20, 0.10],
+        visual_mood: '温情私密, 深沉优雅, 略带忧郁',
+        medium: '35mm Film / Kodak Portra 800'
+      },
+      skill_03_camera_param: {
+        light: '柔和漫射面光 + 微弱填充光 + 极轻轮廓光',
+        color_tone: '暖奶油主调 + 冷蓝点缀 / 莫兰迪低饱和暖灰',
+        camera: 'ARRI Alexa Mini LF / Kodak Portra 800',
+        composition: '三分法 + 平视微仰角 + 前景虚化引导',
+        lens_focal: '85mm 人像大光圈',
+        aperture: 'f/1.4 极致浅景深'
+      },
+      skill_04_scene_content: {
+        subject: '一位年轻女性，金发盘起，浅蓝眼眸，面部表情沉静而略带忧郁，嘴唇微启，正凝视画面右侧人物。她身穿米色露肩上衣，颈部线条清晰，皮肤质感细腻，是画面绝对视觉焦点。',
+        background: '背景完全虚化，呈现暖黄色调的模糊色块，无法辨识具体建筑或环境，但营造出室内柔和光线的氛围。无明确地标、家具或自然元素，仅以抽象色块强化人物情绪与空间纵深感。',
+        action: '女性处于静态凝视状态，头部微微侧向右方，目光聚焦于画面外右侧人物（仅可见其蓝色衣袖轮廓）。嘴唇微张，似在倾听或即将回应，形成无声的情感对话。整体姿态优雅内敛，传递出专注、期待或轻微不安的情绪张力。',
+        foreground: '画面右下角有一块深蓝色布料（推测为另一人物衣物），呈虚化状态，作为前景遮挡物，不仅增加画面层次，也引导观众视线向中心女性集中，并暗示“对话对象”的存在，强化互动关系。',
+        environment: '未明确指定具体世界观，但从光影、服饰、妆容及构图风格判断，属于“现代都市室内场景”或“浪漫剧情片特写镜头”。整体氛围偏向温情、私密、情感浓烈，适合爱情、家庭或心理剧情类影视作品。'
+      },
+      skill_05_detail_desc: {
+        detail: '皮肤质感细腻通透，毛孔与微小肌理清晰可见，金发丝丝分明并在边缘柔光中泛着微金光晕，米色露肩上衣针织纹理清晰柔软。',
+        emotion: '沉静中略带忧郁与探寻，眼神专注而内敛，饱含未尽言说的复杂情绪张力。',
+        textures: '细腻皮肤纹理, 柔软针织织物, 柔和发丝微光',
+        attire_or_props: '米色露肩上衣'
+      },
+      skill_06_prompt_generate: {
+        positive: '(masterpiece, best quality, ultra-detailed:1.2), (neoclassical portrait photography:1.2), (cinematic realism:1.3), a young woman with blonde hair tied up, light blue eyes, serene yet slightly melancholy expression, lips parted, gazing towards right, beige off-shoulder top, shot on ARRI Alexa Mini LF, Kodak Portra 800, 85mm portrait lens, f/1.4 aperture, rule of thirds, eye-level slight low angle, foreground bokeh guide, soft diffused facial lighting, gentle fill light, subtle rim light, warm creamy tones with subtle cool blue accents, muted Morandi warm grey, ultra delicate skin texture, shallow depth of field, 8k uhd, photorealistic',
+        negative: 'blurry, low quality, distortion, cartoon, 3d, bad anatomy, bad hands, deformed limbs, watermark, text, flat lighting, high saturation',
+        target_model: 'SDXL 1.0',
+        suggested_params: {
+          cfg_scale: 7.0,
+          steps: 30,
+          sampler: 'Euler A',
+          aspect_ratio: '3:4'
+        }
+      }
+    }
+  },
+  {
     id: 'sample_01',
     origin_path: '/samples/pixar_robot_workshop.png',
     thumb_path: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
