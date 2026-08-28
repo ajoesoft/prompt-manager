@@ -22,6 +22,7 @@ import {
   RefreshCw,
   Search,
   LayoutGrid,
+  Columns3,
   List
 } from 'lucide-react';
 import { HistoryItem } from './types';
@@ -70,7 +71,7 @@ export default function App() {
   const [showExportModal, setShowExportModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'flow'>('flow');
 
   // Listen for native Tauri drag-and-drop events at root level (Ubuntu Linux / GTK Webview)
   useEffect(() => {
@@ -93,8 +94,19 @@ export default function App() {
     files: { dataUrl: string; name: string; size: number }[],
     targetModel: string
   ) => {
+    if (isAnalyzing || !files || files.length === 0) return;
     setShowImportModal(false);
-    for (const file of files) {
+    // Deduplicate files by name + size
+    const uniqueFiles: { dataUrl: string; name: string; size: number }[] = [];
+    const seen = new Set<string>();
+    for (const f of files) {
+      const key = `${f.name}__${f.size}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniqueFiles.push(f);
+      }
+    }
+    for (const file of uniqueFiles) {
       await runReversePipeline(file, targetModel);
     }
   };
@@ -214,20 +226,20 @@ export default function App() {
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-1.5 rounded transition ${
-                  viewMode === 'list' ? 'bg-slate-100 text-blue-600' : 'text-slate-400 hover:text-slate-700'
+                  viewMode === 'list' ? 'bg-slate-100 text-blue-600 font-semibold shadow-2xs' : 'text-slate-400 hover:text-slate-700'
                 }`}
                 title={t('main.listView')}
               >
                 <List className="w-4 h-4" />
               </button>
               <button
-                onClick={() => setViewMode('grid')}
+                onClick={() => setViewMode('flow')}
                 className={`p-1.5 rounded transition ${
-                  viewMode === 'grid' ? 'bg-slate-100 text-blue-600' : 'text-slate-400 hover:text-slate-700'
+                  viewMode === 'flow' ? 'bg-slate-100 text-blue-600 font-semibold shadow-2xs' : 'text-slate-400 hover:text-slate-700'
                 }`}
-                title={t('main.gridView')}
+                title={t('main.flowView')}
               >
-                <LayoutGrid className="w-4 h-4" />
+                <Columns3 className="w-4 h-4" />
               </button>
 
               <button
@@ -255,7 +267,7 @@ export default function App() {
                 className={
                   viewMode === 'list'
                     ? 'space-y-4'
-                    : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'
+                    : 'columns-1 md:columns-2 lg:columns-3 xl:columns-3 gap-4 [column-fill:_balance]'
                 }
               >
                 {filteredHistory.map((item) => (

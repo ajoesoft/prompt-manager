@@ -16,7 +16,7 @@ import { useLanguage } from '../i18n/LanguageContext';
 
 interface PromptResultCardProps {
   item: HistoryItem;
-  layoutMode?: 'list' | 'grid';
+  layoutMode?: 'list' | 'grid' | 'flow';
   onEdit: (item: HistoryItem) => void;
   onDelete: (id: string) => void;
   onToggleFavorite: (id: string) => void;
@@ -91,17 +91,17 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
   const cameraDevice = item.skill_result_json.skill_03_camera_param?.camera;
   const subject = item.skill_result_json.skill_04_scene_content?.subject;
 
-  const isGrid = layoutMode === 'grid';
+  const isFlow = layoutMode === 'flow' || layoutMode === 'grid';
 
   return (
-    <div className={`bg-white border border-slate-200 hover:border-slate-300 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition duration-200 group flex flex-col ${isGrid ? '' : ''}`}>
-      <div className={`p-4 flex flex-col ${isGrid ? 'space-y-3' : 'md:flex-row gap-4'}`}>
-        {/* Thumbnail */}
-        <div className={`relative bg-slate-100 rounded-lg overflow-hidden border border-slate-200 group-hover:border-slate-300 flex-shrink-0 ${isGrid ? 'w-full h-44' : 'w-full md:w-44 h-44'}`}>
+    <div className={`bg-white border border-slate-200 hover:border-slate-300 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition duration-200 group flex flex-col break-inside-avoid ${isFlow ? 'w-full mb-4 inline-block' : 'w-full'}`}>
+      <div className={`p-4 flex flex-col ${isFlow ? 'space-y-3' : 'md:flex-row gap-4'}`}>
+        {/* Thumbnail - adapts width horizontally and naturally extends vertically in flow mode */}
+        <div className={`relative bg-slate-100 rounded-lg overflow-hidden border border-slate-200 group-hover:border-slate-300 flex-shrink-0 ${isFlow ? 'w-full' : 'w-full md:w-44 h-44'}`}>
           <img
             src={item.thumb_path}
             alt={item.file_name}
-            className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+            className={`w-full ${isFlow ? 'h-auto block object-contain' : 'h-full object-cover'} transition duration-300 group-hover:scale-[1.02]`}
             loading="lazy"
           />
 
@@ -232,13 +232,13 @@ export const PromptResultCard: React.FC<PromptResultCardProps> = ({
                   <span>{copiedPos ? t('card.copied') : t('card.copy')}</span>
                 </button>
               </div>
-              <p className={`text-xs text-slate-100 select-all font-mono leading-relaxed ${isGrid ? 'line-clamp-3' : 'line-clamp-2'}`}>
+              <p className={`text-xs text-slate-100 select-all font-mono leading-relaxed ${isFlow ? 'line-clamp-3' : 'line-clamp-2'}`}>
                 {item.positive_prompt}
               </p>
             </div>
 
             {/* Negative Prompt Box (if present and in list mode or when expanded) */}
-            {item.negative_prompt && (!isGrid || isExpanded) && (
+            {item.negative_prompt && (!isFlow || isExpanded) && (
               <div className="bg-slate-50 rounded-lg p-2.5 border border-slate-200 relative">
                 <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-0.5">
                   <span className="font-semibold text-slate-600">{t('card.negativePrompt')}</span>

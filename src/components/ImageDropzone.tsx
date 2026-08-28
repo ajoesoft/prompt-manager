@@ -37,6 +37,23 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef<number>(0);
 
+  // Helper to add files with strict deduplication by name + size
+  const addFilesSafely = useCallback((newFiles: { dataUrl: string; name: string; size: number }[]) => {
+    if (!newFiles || newFiles.length === 0) return;
+    setSelectedFiles((prev) => {
+      const existingKeys = new Set(prev.map((f) => `${f.name}__${f.size}`));
+      const nonDuplicates: { dataUrl: string; name: string; size: number }[] = [];
+      for (const item of newFiles) {
+        const key = `${item.name}__${item.size}`;
+        if (!existingKeys.has(key)) {
+          existingKeys.add(key);
+          nonDuplicates.push(item);
+        }
+      }
+      return [...prev, ...nonDuplicates];
+    });
+  }, []);
+
   // Global window listeners to prevent Linux/Ubuntu browser default actions (such as navigating away to the file)
   useEffect(() => {
     const handleGlobalDragOver = (e: DragEvent) => {
@@ -69,7 +86,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
         try {
           const imageFiles = await tauriReadImageFiles(paths);
           if (imageFiles && imageFiles.length > 0) {
-            setSelectedFiles((prev) => [...prev, ...imageFiles]);
+            addFilesSafely(imageFiles);
           } else {
             setErrorMsg(t('dropzone.invalidFormat'));
           }
@@ -88,7 +105,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
     return () => {
       if (unlistenFn) unlistenFn();
     };
-  }, [t]);
+  }, [t, addFilesSafely]);
 
   const handleFiles = useCallback((files: FileList | File[] | null) => {
     if (!files || (files instanceof FileList && files.length === 0) || (Array.isArray(files) && files.length === 0)) return;
@@ -139,9 +156,9 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
     });
 
     Promise.all(readers).then((results) => {
-      setSelectedFiles((prev) => [...prev, ...results]);
+      addFilesSafely(results);
     });
-  }, [t]);
+  }, [t, addFilesSafely]);
 
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
@@ -214,7 +231,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
         if (isTauri()) {
           const imageFiles = await tauriReadImageFiles(paths);
           if (imageFiles.length > 0) {
-            setSelectedFiles((prev) => [...prev, ...imageFiles]);
+            addFilesSafely(imageFiles);
             setErrorMsg(null);
             return;
           }
@@ -228,7 +245,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
   };
 
   const handleSubmit = () => {
-    if (selectedFiles.length === 0) return;
+    if (selectedFiles.length === 0 || isAnalyzing) return;
     onStartAnalysis(selectedFiles, targetModel);
   };
 

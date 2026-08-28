@@ -323,12 +323,27 @@ export async function listenTauriDragDrop(
     const { listen } = await import('@tauri-apps/api/event');
 
     const unlistens: (() => void)[] = [];
+    let lastDropTime = 0;
+    let lastDropSignature = '';
+
+    const handlePaths = (paths: string[]) => {
+      if (!paths || paths.length === 0) return;
+      const now = Date.now();
+      const signature = paths.slice().sort().join('||');
+      // Ignore identical drop events occurring within 800ms
+      if (now - lastDropTime < 800 && signature === lastDropSignature) {
+        return;
+      }
+      lastDropTime = now;
+      lastDropSignature = signature;
+      onDropPaths(paths);
+    };
 
     // Tauri 2.0 drag-drop
     const u1 = await listen<any>('tauri://drag-drop', (event) => {
       const paths = event.payload?.paths || [];
       if (paths.length > 0) {
-        onDropPaths(paths);
+        handlePaths(paths);
       }
       onDragStateChange?.(false);
     });
@@ -344,11 +359,11 @@ export async function listenTauriDragDrop(
     });
     unlistens.push(u3);
 
-    // Tauri 1.x / fallback file-drop
+    // Tauri 1.x / fallback file-drop (deduplicated by handlePaths)
     const u4 = await listen<any>('tauri://file-drop', (event) => {
       const paths = Array.isArray(event.payload) ? event.payload : event.payload?.paths || [];
       if (paths.length > 0) {
-        onDropPaths(paths);
+        handlePaths(paths);
       }
       onDragStateChange?.(false);
     });

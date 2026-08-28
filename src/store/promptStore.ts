@@ -146,7 +146,21 @@ export function usePromptStore() {
 
   // Actions
   const addHistoryItem = useCallback((item: HistoryItem) => {
-    setHistoryList((prev) => [item, ...prev]);
+    setHistoryList((prev) => {
+      // Prevent inserting duplicate history items if created within 2 seconds with identical filename & target_model
+      const isDuplicate = prev.some(
+        (existing) =>
+          existing.id === item.id ||
+          (existing.file_name === item.file_name &&
+            existing.file_size_kb === item.file_size_kb &&
+            existing.target_model === item.target_model &&
+            Math.abs(new Date(existing.create_at).getTime() - new Date(item.create_at).getTime()) < 3000)
+      );
+      if (isDuplicate) {
+        return prev;
+      }
+      return [item, ...prev];
+    });
   }, []);
 
   const updateHistoryItem = useCallback((updated: HistoryItem) => {
