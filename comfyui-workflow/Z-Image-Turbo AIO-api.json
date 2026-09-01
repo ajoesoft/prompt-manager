@@ -1,0 +1,164 @@
+{
+  "9": {
+    "inputs": {
+      "filename_prefix": "zimage-aio",
+      "images": [
+        "43",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "41": {
+    "inputs": {
+      "width": [
+        "50",
+        0
+      ],
+      "height": [
+        "50",
+        1
+      ],
+      "batch_size": 1
+    },
+    "class_type": "EmptySD3LatentImage",
+    "_meta": {
+      "title": "EmptySD3LatentImage"
+    }
+  },
+  "42": {
+    "inputs": {
+      "conditioning": [
+        "45",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "Conditioning Zero Out"
+    }
+  },
+  "43": {
+    "inputs": {
+      "samples": [
+        "44",
+        0
+      ],
+      "vae": [
+        "61",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "44": {
+    "inputs": {
+      "seed": 384476551898328,
+      "steps": 20,
+      "cfg": 3,
+      "sampler_name": "res_multistep",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "47",
+        0
+      ],
+      "positive": [
+        "45",
+        0
+      ],
+      "negative": [
+        "42",
+        0
+      ],
+      "latent_image": [
+        "41",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "45": {
+    "inputs": {
+      "text": "{{positive_prompt}}",
+      "clip": [
+        "61",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "47": {
+    "inputs": {
+      "shift": 3,
+      "model": [
+        "61",
+        0
+      ]
+    },
+    "class_type": "ModelSamplingAuraFlow",
+    "_meta": {
+      "title": "ModelSamplingAuraFlow"
+    }
+  },
+  "48": {
+    "inputs": {
+      "width": {{image_width}},
+      "height": {{image_height}},
+      "batch_size": 1,
+      "color": 0
+    },
+    "class_type": "EmptyImage",
+    "_meta": {
+      "title": "Empty Image"
+    }
+  },
+  "49": {
+    "inputs": {
+      "upscale_method": "nearest-exact",
+      "megapixels": 4,
+      "resolution_steps": 1,
+      "image": [
+        "48",
+        0
+      ]
+    },
+    "class_type": "ImageScaleToTotalPixels",
+    "_meta": {
+      "title": "Scale Image to Total Pixels"
+    }
+  },
+  "50": {
+    "inputs": {
+      "image": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "GetImageSize+",
+    "_meta": {
+      "title": "🔧 Get Image Size"
+    }
+  },
+  "61": {
+    "inputs": {
+      "ckpt_name": "z-image-turbo-bf16-aio.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  }
+}

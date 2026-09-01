@@ -1,0 +1,15 @@
+# krea2_turbo.skill
+model_id: "krea2_turbo"
+model_name: "KREA 2 TURBO"
+stage_name: "KREA 2 TURBO 实时流式专有提示词格式化输出"
+version: "2.0"
+characteristics:
+  - "高浓缩自然语言"
+  - "实时流式响应与超低步骤 (<10 steps)"
+  - "强对比度与高视觉冲击"
+template_syntax: "{style_list}, {subject}, {action}, in {background}, {light}, {camera}, {detail}, {visual_mood}, 8k resolution, cinematic masterpiece"
+default_params:
+  cfg_scale: 2.0
+  steps: 8
+  sampler: "Euler A"
+  aspect_ratio: "16:9"

@@ -1,0 +1,16 @@
+# flux2.skill
+model_id: "flux2"
+model_name: "flux2"
+stage_name: "FLUX.2 / FLUX.1 纯自然语言长句提示词格式化输出"
+version: "2.0"
+characteristics:
+  - "纯自然长句叙述语法"
+  - "无需负面提示词 (Zero Negative Prompt)"
+  - "顶级光学镜头硬件模拟与光影物理学"
+template_syntax: "A cinematic high-resolution visual capture of {subject} who is {action}. The scene takes place in {background}, characterized by {environment}. Shot on {camera} with {lens_focal} and {aperture}, illuminated with {light}. The color grading exhibits {color_tone}, revealing fine details such as {detail}. The overall aesthetic embodies {style_list} with a {visual_mood} mood."
+negative_syntax: ""
+default_params:
+  cfg_scale: 3.5
+  steps: 28
+  sampler: "Euler"
+  aspect_ratio: "16:9"

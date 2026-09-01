@@ -2,35 +2,47 @@ import React from 'react';
 import {
   Sparkles,
   Cpu,
-  Globe,
   Settings,
   Info,
   Download,
   PlusCircle,
   HardDrive,
-  Languages
+  FolderKanban,
+  PenTool,
+  Wand2,
 } from 'lucide-react';
-import { ModelConfig } from '../types';
+import { ModelConfig, Project } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 
 interface DesktopHeaderProps {
   modelConfig: ModelConfig;
   totalCount: number;
+  projects: Project[];
+  activeProject: Project | null;
   onOpenSettings: () => void;
   onOpenAbout: () => void;
   onOpenExport: () => void;
   onOpenImportModal: () => void;
+  onOpenProjectModal: () => void;
+  onOpenManualPromptModal?: () => void;
+  onOpenElementReplacerModal?: () => void;
+  onSelectProject: (uuid: string) => void;
 }
 
 export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
   modelConfig,
   totalCount,
+  projects,
+  activeProject,
   onOpenSettings,
   onOpenAbout,
   onOpenExport,
   onOpenImportModal,
+  onOpenProjectModal,
+  onOpenManualPromptModal,
+  onOpenElementReplacerModal,
 }) => {
-  const { lang, setLang, toggleLang, t } = useLanguage();
+  const { lang, setLang, t } = useLanguage();
 
   return (
     <header className="bg-white border-b border-slate-200 text-slate-800 select-none shadow-xs">
@@ -51,21 +63,36 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
           </div>
         </div>
 
-        {/* Center Mode Indicator */}
+        {/* Center Mode & Active Project Indicator */}
         <div className="flex items-center space-x-2">
-          {modelConfig.run_mode === 'local' ? (
-            <div className="flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-medium">
-              <Cpu className="w-3 h-3 text-emerald-400" />
-              <span>{t('header.localModeBadge')}</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            </div>
-          ) : (
-            <div className="flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] font-medium">
-              <Globe className="w-3 h-3 text-blue-400" />
-              <span>{t('header.onlineModeBadge')} ({modelConfig.api_model || 'Gemini 3.7 Flash'})</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-            </div>
-          )}
+          {/* Active Project Pill */}
+          <div
+            onClick={onOpenProjectModal}
+            className="flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] font-medium cursor-pointer hover:bg-blue-500/30 transition"
+            title="点击打开项目管理与 ComfyUI 调度"
+          >
+            <FolderKanban className="w-3 h-3 text-blue-400" />
+            <span className="font-semibold text-blue-200">当前项目:</span>
+            <span className="font-mono text-white font-bold truncate max-w-[150px]">
+              {activeProject?.name || '默认项目'}
+            </span>
+            <span className="text-[10px] bg-blue-500/40 text-blue-200 px-1.5 py-0.2 rounded font-mono">
+              {activeProject?.target_model || 'Krea2'}
+            </span>
+          </div>
+
+          <div
+            onClick={onOpenSettings}
+            className="flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-medium cursor-pointer hover:bg-emerald-500/30 transition"
+            title="点击打开模型管理与下载中心"
+          >
+            <Cpu className="w-3 h-3 text-emerald-400" />
+            <span className="font-semibold">本地视觉模型:</span>
+            <span className="font-mono text-emerald-200 truncate max-w-[160px]">
+              {modelConfig.main_gguf ? modelConfig.main_gguf.split(/[\\/]/).pop() : 'Qwen2.5-VL-7B'}
+            </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          </div>
         </div>
 
         {/* Right Status */}
@@ -79,13 +106,51 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
 
       {/* Primary Toolbar */}
       <div className="flex items-center justify-between px-5 py-2.5 bg-slate-50/80 border-b border-slate-200/60">
-        <div className="flex items-center space-x-2.5">
+        <div className="flex items-center space-x-2.5 flex-wrap gap-y-1">
           <button
             onClick={onOpenImportModal}
-            className="flex items-center space-x-2 px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold shadow-sm transition"
+            className="flex items-center space-x-2 px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs font-semibold shadow-xs transition"
           >
             <PlusCircle className="w-4 h-4" />
             <span>{t('header.importBtn')}</span>
+          </button>
+
+          {/* Manual Write Prompt Button */}
+          {onOpenManualPromptModal && (
+            <button
+              onClick={onOpenManualPromptModal}
+              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:from-indigo-700 active:to-purple-800 text-white text-xs font-semibold shadow-xs transition"
+              title="手动编写正负提示词与参数并加入当前项目"
+            >
+              <PenTool className="w-3.5 h-3.5" />
+              <span>手写提示词</span>
+            </button>
+          )}
+
+          {/* Prompt Elements Replacement / Style Transformer Button */}
+          {onOpenElementReplacerModal && (
+            <button
+              onClick={onOpenElementReplacerModal}
+              className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 text-purple-700 text-xs font-semibold border border-purple-200 shadow-2xs transition"
+              title="对提示词要素（风格、类型、人物IP、背景、灯光、镜头等）进行拆解替换与风格重塑"
+            >
+              <Wand2 className="w-3.5 h-3.5 text-purple-600" />
+              <span>要素替换重塑</span>
+            </button>
+          )}
+
+          {/* Project Management Button */}
+          <button
+            onClick={onOpenProjectModal}
+            className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 shadow-xs transition"
+          >
+            <FolderKanban className="w-3.5 h-3.5 text-blue-600" />
+            <span>项目管理与调度</span>
+            {projects.length > 0 && (
+              <span className="text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.2 rounded-full font-mono font-bold">
+                {projects.length}
+              </span>
+            )}
           </button>
 
           <button
@@ -145,5 +210,3 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
     </header>
   );
 };
-
-

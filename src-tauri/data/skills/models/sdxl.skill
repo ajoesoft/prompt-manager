@@ -1,0 +1,16 @@
+# sdxl.skill
+model_id: "sdxl"
+model_name: "SDXL 1.0"
+stage_name: "Stable Diffusion XL (SDXL 1.0) 权重与标签专有提示词格式化输出"
+version: "2.0"
+characteristics:
+  - "Danbooru 标签与摄影词汇组合"
+  - "支持 (keyword:weight) 语法加权"
+  - "高质量负面词库过滤"
+template_syntax: "(masterpiece, best quality, ultra-detailed:1.2), {subject}, {action}, {style_weighted}, {background}, {camera}, {light}, {composition}, {detail}, intricate textures, hyperrealistic, 8k uhd, dslr:1.1"
+negative_syntax: "canvas frame, cartoon, 3d, sketch, anime, bad hands, bad eyes, cropped, bad proportions, bad art, monochrome, ugly, worst quality, low quality, normal quality, lowres, extra limbs, watermark"
+default_params:
+  cfg_scale: 7.0
+  steps: 30
+  sampler: "DPM++ 2M Karras"
+  aspect_ratio: "16:9"

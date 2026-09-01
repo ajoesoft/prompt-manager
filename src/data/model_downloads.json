@@ -1,0 +1,546 @@
+{
+  "version": "2.0.0",
+  "updated_at": "2026-08-28",
+  "default_download_directory": "./models",
+  "models": [
+    {
+      "id": "qwen2.5-vl-7b-instruct",
+      "name": "Qwen2.5-VL-7B-Instruct (主流推荐视觉反推大模型)",
+      "family": "qwen_vl",
+      "family_display": "Qwen2.5-VL 视觉反推",
+      "author": "Qwen (Alibaba Cloud)",
+      "model_type": "main_model",
+      "parameters": "7B",
+      "context_length": 32768,
+      "recommended_for_reverse": true,
+      "description_zh": "阿里通义千问最新一代多模态旗舰模型，对构图、光影、微观材质和影视镜头具有极强解析能力，是 6 阶段分镜反推的最佳选择。",
+      "description_en": "Alibaba Qwen's premier vision-language model with exceptional breakdown for composition, lighting, micro-textures, and camera parameters.",
+      "hf_repo": "Qwen/Qwen2.5-VL-7B-Instruct-GGUF",
+      "ms_repo": "Qwen/Qwen2.5-VL-7B-Instruct-GGUF",
+      "tags": ["多模态反推", "构图拆解", "光影解析", "8GB显存推荐"],
+      "quantizations": [
+        {
+          "quant": "Q4_K_M",
+          "file_name": "qwen2.5-vl-7b-instruct-q4_k_m.gguf",
+          "size_gb": 4.68,
+          "recommended": true,
+          "vram_requirement_gb": 6.5,
+          "description_zh": "推荐主流档位：画质与生成速度黄金平衡，占用显存约 6.5GB",
+          "description_en": "Balanced recommendation: optimal quality & inference speed, requires ~6.5GB VRAM",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/master/qwen2.5-vl-7b-instruct-q4_k_m.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/main/qwen2.5-vl-7b-instruct-q4_k_m.gguf"
+          }
+        },
+        {
+          "quant": "Q2_K",
+          "file_name": "qwen2.5-vl-7b-instruct-q2_k.gguf",
+          "size_gb": 2.95,
+          "recommended": false,
+          "vram_requirement_gb": 4.0,
+          "description_zh": "极限轻量量化：超低显存需求，适合 4GB 显存显卡或集显轻薄本",
+          "description_en": "Ultra-low memory: fits 4GB VRAM or integrated graphics laptops",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/master/qwen2.5-vl-7b-instruct-q2_k.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/main/qwen2.5-vl-7b-instruct-q2_k.gguf"
+          }
+        },
+        {
+          "quant": "Q5_K_M",
+          "file_name": "qwen2.5-vl-7b-instruct-q5_k_m.gguf",
+          "size_gb": 5.43,
+          "recommended": false,
+          "vram_requirement_gb": 7.5,
+          "description_zh": "高保真量化：精度显著提升，适合 8GB/12GB 显存设备",
+          "description_en": "High fidelity: improved accuracy, ideal for 8GB/12GB VRAM cards",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/master/qwen2.5-vl-7b-instruct-q5_k_m.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/main/qwen2.5-vl-7b-instruct-q5_k_m.gguf"
+          }
+        },
+        {
+          "quant": "Q6_K",
+          "file_name": "qwen2.5-vl-7b-instruct-q6_k.gguf",
+          "size_gb": 6.25,
+          "recommended": false,
+          "vram_requirement_gb": 8.5,
+          "description_zh": "超高精度量化：接近无损，细节描述极其丰富",
+          "description_en": "Near-lossless precision: extra rich fine-grained details",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/master/qwen2.5-vl-7b-instruct-q6_k.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/main/qwen2.5-vl-7b-instruct-q6_k.gguf"
+          }
+        },
+        {
+          "quant": "Q8_0",
+          "file_name": "qwen2.5-vl-7b-instruct-q8_0.gguf",
+          "size_gb": 7.82,
+          "recommended": false,
+          "vram_requirement_gb": 10.5,
+          "description_zh": "8-bit 无损级量化：大显存旗舰卡首选，极致还原原模型权重",
+          "description_en": "8-bit true precision: perfect fidelity for 12GB+ GPUs",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/master/qwen2.5-vl-7b-instruct-q8_0.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/main/qwen2.5-vl-7b-instruct-q8_0.gguf"
+          }
+        },
+        {
+          "quant": "F16",
+          "file_name": "qwen2.5-vl-7b-instruct-f16.gguf",
+          "size_gb": 14.7,
+          "recommended": false,
+          "vram_requirement_gb": 18.0,
+          "description_zh": "未量化 FP16 全精度模型：科研与最高画质基准测试",
+          "description_en": "Full precision FP16: scientific benchmark & lossless baseline",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/master/qwen2.5-vl-7b-instruct-f16.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/main/qwen2.5-vl-7b-instruct-f16.gguf"
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen2.5-vl-3b-instruct",
+      "name": "Qwen2.5-VL-3B-Instruct (极速轻量显存友好型)",
+      "family": "qwen_vl",
+      "family_display": "Qwen2.5-VL 视觉反推",
+      "author": "Qwen (Alibaba Cloud)",
+      "model_type": "main_model",
+      "parameters": "3B",
+      "context_length": 32768,
+      "recommended_for_reverse": true,
+      "description_zh": "30亿参数高密度多模态模型，推理延迟低至 1-2 秒，仅需 3-4GB 显存即可满血离线运行。",
+      "description_en": "Compact 3B vision-language model with sub-second response, running flawlessly on 3-4GB VRAM.",
+      "hf_repo": "Qwen/Qwen2.5-VL-3B-Instruct-GGUF",
+      "ms_repo": "Qwen/Qwen2.5-VL-3B-Instruct-GGUF",
+      "tags": ["秒级反推", "轻量化", "笔记本友好", "低功耗"],
+      "quantizations": [
+        {
+          "quant": "Q4_K_M",
+          "file_name": "qwen2.5-vl-3b-instruct-q4_k_m.gguf",
+          "size_gb": 2.15,
+          "recommended": true,
+          "vram_requirement_gb": 3.2,
+          "description_zh": "标准推荐：仅 2.15GB，极快出词，反推速度极佳",
+          "description_en": "Standard pick: 2.15GB, lightning fast token generation",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/master/qwen2.5-vl-3b-instruct-q4_k_m.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/main/qwen2.5-vl-3b-instruct-q4_k_m.gguf"
+          }
+        },
+        {
+          "quant": "Q2_K",
+          "file_name": "qwen2.5-vl-3b-instruct-q2_k.gguf",
+          "size_gb": 1.45,
+          "recommended": false,
+          "vram_requirement_gb": 2.2,
+          "description_zh": "极低显存：仅 1.45GB，CPU 模式亦可流畅跑动",
+          "description_en": "Ultra compact: 1.45GB, smooth even in pure CPU mode",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/master/qwen2.5-vl-3b-instruct-q2_k.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/main/qwen2.5-vl-3b-instruct-q2_k.gguf"
+          }
+        },
+        {
+          "quant": "Q5_K_M",
+          "file_name": "qwen2.5-vl-3b-instruct-q5_k_m.gguf",
+          "size_gb": 2.48,
+          "recommended": false,
+          "vram_requirement_gb": 3.8,
+          "description_zh": "高品质 3B：细致捕获色彩与主体特征",
+          "description_en": "High quality 3B: enhanced perception for colors and subjects",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/master/qwen2.5-vl-3b-instruct-q5_k_m.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/main/qwen2.5-vl-3b-instruct-q5_k_m.gguf"
+          }
+        },
+        {
+          "quant": "Q8_0",
+          "file_name": "qwen2.5-vl-3b-instruct-q8_0.gguf",
+          "size_gb": 3.52,
+          "recommended": false,
+          "vram_requirement_gb": 4.8,
+          "description_zh": "无损 8-bit：3B 模型的最高精度版本",
+          "description_en": "Lossless 8-bit: top precision for 3B parameter tier",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/master/qwen2.5-vl-3b-instruct-q8_0.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/main/qwen2.5-vl-3b-instruct-q8_0.gguf"
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen2.5-vl-72b-instruct",
+      "name": "Qwen2.5-VL-72B-Instruct (顶级画质超大模态模型)",
+      "family": "qwen_vl",
+      "family_display": "Qwen2.5-VL 视觉反推",
+      "author": "Qwen (Alibaba Cloud)",
+      "model_type": "main_model",
+      "parameters": "72B",
+      "context_length": 32768,
+      "recommended_for_reverse": false,
+      "description_zh": "720亿超强多模态参数，媲美甚至超越 GPT-4o 视觉反推深度，适合高端双卡或 32GB+ 显存工作站。",
+      "description_en": "72B flagship model with vision performance matching GPT-4o, for 32GB+ workstations.",
+      "hf_repo": "Qwen/Qwen2.5-VL-72B-Instruct-GGUF",
+      "ms_repo": "Qwen/Qwen2.5-VL-72B-Instruct-GGUF",
+      "tags": ["超强画质", "GPT-4o对标", "工作站专属", "72B巨兽"],
+      "quantizations": [
+        {
+          "quant": "Q4_K_M",
+          "file_name": "qwen2.5-vl-72b-instruct-q4_k_m.gguf",
+          "size_gb": 43.5,
+          "recommended": true,
+          "vram_requirement_gb": 48.0,
+          "description_zh": "72B 标准量化：约 43.5GB，适合 RTX 4090 双卡或 64GB 内存",
+          "description_en": "72B standard quant: ~43.5GB, requires dual RTX 4090 or 64GB RAM",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-72B-Instruct-GGUF/resolve/master/qwen2.5-vl-72b-instruct-q4_k_m.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-72B-Instruct-GGUF/resolve/main/qwen2.5-vl-72b-instruct-q4_k_m.gguf"
+          }
+        },
+        {
+          "quant": "Q2_K",
+          "file_name": "qwen2.5-vl-72b-instruct-q2_k.gguf",
+          "size_gb": 26.2,
+          "recommended": false,
+          "vram_requirement_gb": 30.0,
+          "description_zh": "72B 极限压缩：单张 24GB 显卡配合部分内存卸载可运行",
+          "description_en": "72B ultra compressed: runnable on single 24GB GPU + RAM offload",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-72B-Instruct-GGUF/resolve/master/qwen2.5-vl-72b-instruct-q2_k.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-72B-Instruct-GGUF/resolve/main/qwen2.5-vl-72b-instruct-q2_k.gguf"
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen3.5-vision-9b",
+      "name": "Qwen 3.5-9B-VL (次世代多模态逆向解析引擎)",
+      "family": "qwen_3_5",
+      "family_display": "Qwen 3.5 次世代多模态",
+      "author": "Qwen Community / GGUF Hub",
+      "model_type": "main_model",
+      "parameters": "9B",
+      "context_length": 32768,
+      "recommended_for_reverse": true,
+      "description_zh": "基于 Qwen 3.5 架构深度调优的分镜逆向解析模型，针对 SDXL、Midjourney 提示词装配做了全量提示词对齐。",
+      "description_en": "Next-gen Qwen 3.5 architecture tailored for reverse prompt engineering with SDXL and Midjourney prompt alignments.",
+      "hf_repo": "bartowski/Qwen-3.5-9B-Vision-GGUF",
+      "ms_repo": "modelscope/Qwen-3.5-9B-Vision-GGUF",
+      "tags": ["Qwen 3.5", "影视分镜对齐", "MJ/SDXL优化", "高泛化"],
+      "quantizations": [
+        {
+          "quant": "Q4_K_M",
+          "file_name": "Qwen-3.5-9B-Vision-Q4_K_M.gguf",
+          "size_gb": 5.72,
+          "recommended": true,
+          "vram_requirement_gb": 7.2,
+          "description_zh": "推荐档位：5.72GB，平衡速度与分镜解构能力",
+          "description_en": "Recommended: 5.72GB, optimal speed & scene deconstruction",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.5-9B-Vision-GGUF/resolve/master/Qwen-3.5-9B-Vision-Q4_K_M.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.5-9B-Vision-GGUF/resolve/main/Qwen-3.5-9B-Vision-Q4_K_M.gguf"
+          }
+        },
+        {
+          "quant": "Q2_K",
+          "file_name": "Qwen-3.5-9B-Vision-Q2_K.gguf",
+          "size_gb": 3.65,
+          "recommended": false,
+          "vram_requirement_gb": 4.8,
+          "description_zh": "轻量档位：3.65GB，低显存加速运行",
+          "description_en": "Low footprint: 3.65GB, fast low-memory execution",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.5-9B-Vision-GGUF/resolve/master/Qwen-3.5-9B-Vision-Q2_K.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.5-9B-Vision-GGUF/resolve/main/Qwen-3.5-9B-Vision-Q2_K.gguf"
+          }
+        },
+        {
+          "quant": "Q5_K_M",
+          "file_name": "Qwen-3.5-9B-Vision-Q5_K_M.gguf",
+          "size_gb": 6.82,
+          "recommended": false,
+          "vram_requirement_gb": 8.5,
+          "description_zh": "高保真：6.82GB，精细刻画胶片颗粒感与焦段",
+          "description_en": "High fidelity: 6.82GB, captures film grain & focal nuances",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.5-9B-Vision-GGUF/resolve/master/Qwen-3.5-9B-Vision-Q5_K_M.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.5-9B-Vision-GGUF/resolve/main/Qwen-3.5-9B-Vision-Q5_K_M.gguf"
+          }
+        },
+        {
+          "quant": "Q6_K",
+          "file_name": "Qwen-3.5-9B-Vision-Q6_K.gguf",
+          "size_gb": 7.95,
+          "recommended": false,
+          "vram_requirement_gb": 9.8,
+          "description_zh": "高阶量化：7.95GB，光影质感深度还原",
+          "description_en": "Ultra quant: 7.95GB, realistic lighting restoration",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.5-9B-Vision-GGUF/resolve/master/Qwen-3.5-9B-Vision-Q6_K.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.5-9B-Vision-GGUF/resolve/main/Qwen-3.5-9B-Vision-Q6_K.gguf"
+          }
+        },
+        {
+          "quant": "Q8_0",
+          "file_name": "Qwen-3.5-9B-Vision-Q8_0.gguf",
+          "size_gb": 9.85,
+          "recommended": false,
+          "vram_requirement_gb": 12.0,
+          "description_zh": "无损 8-bit：9.85GB，顶尖专业工作站推荐",
+          "description_en": "Lossless 8-bit: 9.85GB, workstation tier",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.5-9B-Vision-GGUF/resolve/master/Qwen-3.5-9B-Vision-Q8_0.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.5-9B-Vision-GGUF/resolve/main/Qwen-3.5-9B-Vision-Q8_0.gguf"
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen3.6-vision-8b",
+      "name": "Qwen 3.6-Vision-8B (高精度艺术风格解构模型)",
+      "family": "qwen_3_6",
+      "family_display": "Qwen 3.6 艺术解构",
+      "author": "Qwen Community / GGUF Hub",
+      "model_type": "main_model",
+      "parameters": "8B",
+      "context_length": 32768,
+      "recommended_for_reverse": true,
+      "description_zh": "专为二次元、赛博朋克、新古典主义油画等复合风格反推调优，支持多风格权重精准百分比拆解。",
+      "description_en": "Optimized for anime, cyberpunk, neoclassical oil painting, with multi-style weight ratio parsing.",
+      "hf_repo": "bartowski/Qwen-3.6-8B-Vision-GGUF",
+      "ms_repo": "modelscope/Qwen-3.6-8B-Vision-GGUF",
+      "tags": ["Qwen 3.6", "风格权重矩阵", "艺术解构", "微观色彩"],
+      "quantizations": [
+        {
+          "quant": "Q4_K_M",
+          "file_name": "Qwen-3.6-8B-Vision-Q4_K_M.gguf",
+          "size_gb": 5.12,
+          "recommended": true,
+          "vram_requirement_gb": 6.8,
+          "description_zh": "推荐档位：5.12GB，艺术质感与提示词组装极佳",
+          "description_en": "Recommended: 5.12GB, excellent artistic breakdown",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.6-8B-Vision-GGUF/resolve/master/Qwen-3.6-8B-Vision-Q4_K_M.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.6-8B-Vision-GGUF/resolve/main/Qwen-3.6-8B-Vision-Q4_K_M.gguf"
+          }
+        },
+        {
+          "quant": "Q2_K",
+          "file_name": "Qwen-3.6-8B-Vision-Q2_K.gguf",
+          "size_gb": 3.28,
+          "recommended": false,
+          "vram_requirement_gb": 4.5,
+          "description_zh": "低显存版：3.28GB，轻量级艺术提取",
+          "description_en": "Compact edition: 3.28GB, lightweight style extraction",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.6-8B-Vision-GGUF/resolve/master/Qwen-3.6-8B-Vision-Q2_K.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.6-8B-Vision-GGUF/resolve/main/Qwen-3.6-8B-Vision-Q2_K.gguf"
+          }
+        },
+        {
+          "quant": "Q5_K_M",
+          "file_name": "Qwen-3.6-8B-Vision-Q5_K_M.gguf",
+          "size_gb": 6.05,
+          "recommended": false,
+          "vram_requirement_gb": 7.8,
+          "description_zh": "高保真：6.05GB，高级艺术摄影专用",
+          "description_en": "High fidelity: 6.05GB, fine art photography",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.6-8B-Vision-GGUF/resolve/master/Qwen-3.6-8B-Vision-Q5_K_M.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.6-8B-Vision-GGUF/resolve/main/Qwen-3.6-8B-Vision-Q5_K_M.gguf"
+          }
+        },
+        {
+          "quant": "Q8_0",
+          "file_name": "Qwen-3.6-8B-Vision-Q8_0.gguf",
+          "size_gb": 8.75,
+          "recommended": false,
+          "vram_requirement_gb": 11.0,
+          "description_zh": "无损 8-bit：8.75GB，大师级复杂构图反推",
+          "description_en": "Lossless 8-bit: 8.75GB, master-level composition breakdown",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.6-8B-Vision-GGUF/resolve/master/Qwen-3.6-8B-Vision-Q8_0.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.6-8B-Vision-GGUF/resolve/main/Qwen-3.6-8B-Vision-Q8_0.gguf"
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen3.8-multimodal-14b",
+      "name": "Qwen 3.8-Multimodal-14B (微观材质与影视运镜全能旗舰)",
+      "family": "qwen_3_8",
+      "family_display": "Qwen 3.8 微观影视旗舰",
+      "author": "Qwen Community / GGUF Hub",
+      "model_type": "main_model",
+      "parameters": "14B",
+      "context_length": 32768,
+      "recommended_for_reverse": true,
+      "description_zh": "140亿参数进阶旗舰，对于特写镜头的毛孔、织物经纬、光线折射及景深焦外有着极致的辨识力与表达力。",
+      "description_en": "14B advanced multimodal model with micro-detail rendering for textures, depth of field, and cinema camera recipes.",
+      "hf_repo": "bartowski/Qwen-3.8-14B-Multimodal-GGUF",
+      "ms_repo": "modelscope/Qwen-3.8-14B-Multimodal-GGUF",
+      "tags": ["Qwen 3.8", "14B中杯旗舰", "微观肌理", "电影镜头级解析"],
+      "quantizations": [
+        {
+          "quant": "Q4_K_M",
+          "file_name": "Qwen-3.8-14B-Multimodal-Q4_K_M.gguf",
+          "size_gb": 9.15,
+          "recommended": true,
+          "vram_requirement_gb": 12.0,
+          "description_zh": "推荐主流：9.15GB，12GB 显存显卡首选",
+          "description_en": "Recommended: 9.15GB, top choice for 12GB VRAM GPUs",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.8-14B-Multimodal-GGUF/resolve/master/Qwen-3.8-14B-Multimodal-Q4_K_M.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.8-14B-Multimodal-GGUF/resolve/main/Qwen-3.8-14B-Multimodal-Q4_K_M.gguf"
+          }
+        },
+        {
+          "quant": "Q2_K",
+          "file_name": "Qwen-3.8-14B-Multimodal-Q2_K.gguf",
+          "size_gb": 5.85,
+          "recommended": false,
+          "vram_requirement_gb": 8.0,
+          "description_zh": "轻量量化：5.85GB，8GB 显卡即可体验 14B 强力解析",
+          "description_en": "Lightweight quant: 5.85GB, runs on 8GB VRAM cards",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.8-14B-Multimodal-GGUF/resolve/master/Qwen-3.8-14B-Multimodal-Q2_K.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.8-14B-Multimodal-GGUF/resolve/main/Qwen-3.8-14B-Multimodal-Q2_K.gguf"
+          }
+        },
+        {
+          "quant": "Q5_K_M",
+          "file_name": "Qwen-3.8-14B-Multimodal-Q5_K_M.gguf",
+          "size_gb": 10.8,
+          "recommended": false,
+          "vram_requirement_gb": 14.5,
+          "description_zh": "高保真：10.8GB，16GB 显卡/Mac M芯片极佳表现",
+          "description_en": "High fidelity: 10.8GB, exceptional on 16GB GPU or Apple Silicon",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.8-14B-Multimodal-GGUF/resolve/master/Qwen-3.8-14B-Multimodal-Q5_K_M.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.8-14B-Multimodal-GGUF/resolve/main/Qwen-3.8-14B-Multimodal-Q5_K_M.gguf"
+          }
+        },
+        {
+          "quant": "Q6_K",
+          "file_name": "Qwen-3.8-14B-Multimodal-Q6_K.gguf",
+          "size_gb": 12.4,
+          "recommended": false,
+          "vram_requirement_gb": 16.0,
+          "description_zh": "接近无损：12.4GB，极致细节呈现",
+          "description_en": "Near lossless: 12.4GB, top quality rendering",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.8-14B-Multimodal-GGUF/resolve/master/Qwen-3.8-14B-Multimodal-Q6_K.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.8-14B-Multimodal-GGUF/resolve/main/Qwen-3.8-14B-Multimodal-Q6_K.gguf"
+          }
+        },
+        {
+          "quant": "Q8_0",
+          "file_name": "Qwen-3.8-14B-Multimodal-Q8_0.gguf",
+          "size_gb": 15.6,
+          "recommended": false,
+          "vram_requirement_gb": 19.5,
+          "description_zh": "无损 8-bit：15.6GB，专业影视工作室基准",
+          "description_en": "Lossless 8-bit: 15.6GB, studio benchmark",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/Qwen-3.8-14B-Multimodal-GGUF/resolve/master/Qwen-3.8-14B-Multimodal-Q8_0.gguf",
+            "huggingface": "https://huggingface.co/bartowski/Qwen-3.8-14B-Multimodal-GGUF/resolve/main/Qwen-3.8-14B-Multimodal-Q8_0.gguf"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mmproj-qwen2.5-vl-7b-f16",
+      "name": "mmproj-Qwen2.5-VL-7B-Instruct-f16 (视觉特征投影适配层)",
+      "family": "mmproj",
+      "family_display": "mmproj 视觉投影适配层",
+      "author": "Qwen (Alibaba Cloud)",
+      "model_type": "mmproj",
+      "parameters": "CLIP/ViT-H",
+      "context_length": 32768,
+      "recommended_for_reverse": true,
+      "description_zh": "Qwen2.5-VL 7B 专用的视觉编码投影层 (Vision Projector)。在 llama-server 启动时通过 --mmproj 参数指定，与主模型配合将图像转换为特征向量。",
+      "description_en": "Dedicated Vision Projector for Qwen2.5-VL-7B, passed to llama-server via --mmproj.",
+      "hf_repo": "Qwen/Qwen2.5-VL-7B-Instruct-GGUF",
+      "ms_repo": "Qwen/Qwen2.5-VL-7B-Instruct-GGUF",
+      "tags": ["mmproj", "视觉投影层", "图像编码器", "必备组件"],
+      "quantizations": [
+        {
+          "quant": "F16",
+          "file_name": "mmproj-Qwen2.5-VL-7B-Instruct-f16.gguf",
+          "size_gb": 0.85,
+          "recommended": true,
+          "vram_requirement_gb": 1.0,
+          "description_zh": "标准 F16 视觉投影层：约 850MB，无损视觉特征提取",
+          "description_en": "Standard F16 projector: ~850MB, lossless image feature encoding",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/master/mmproj-Qwen2.5-VL-7B-Instruct-f16.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct-GGUF/resolve/main/mmproj-Qwen2.5-VL-7B-Instruct-f16.gguf"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mmproj-qwen2.5-vl-3b-f16",
+      "name": "mmproj-Qwen2.5-VL-3B-Instruct-f16 (轻量视觉投影层)",
+      "family": "mmproj",
+      "family_display": "mmproj 视觉投影适配层",
+      "author": "Qwen (Alibaba Cloud)",
+      "model_type": "mmproj",
+      "parameters": "ViT-B",
+      "context_length": 32768,
+      "recommended_for_reverse": true,
+      "description_zh": "Qwen2.5-VL 3B 专用的轻量视觉编码投影层，仅 480MB，极速编码，适合低显存与移动端配置。",
+      "description_en": "Lightweight Vision Projector for Qwen2.5-VL-3B, only ~480MB.",
+      "hf_repo": "Qwen/Qwen2.5-VL-3B-Instruct-GGUF",
+      "ms_repo": "Qwen/Qwen2.5-VL-3B-Instruct-GGUF",
+      "tags": ["mmproj", "轻量投影", "3B适配", "快速编码"],
+      "quantizations": [
+        {
+          "quant": "F16",
+          "file_name": "mmproj-Qwen2.5-VL-3B-Instruct-f16.gguf",
+          "size_gb": 0.48,
+          "recommended": true,
+          "vram_requirement_gb": 0.6,
+          "description_zh": "标准 F16 投影层：约 480MB，极轻量",
+          "description_en": "Standard F16 projector: ~480MB, ultra lightweight",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/master/mmproj-Qwen2.5-VL-3B-Instruct-f16.gguf",
+            "huggingface": "https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct-GGUF/resolve/main/mmproj-Qwen2.5-VL-3B-Instruct-f16.gguf"
+          }
+        }
+      ]
+    },
+    {
+      "id": "mmproj-qwen-universal-f16",
+      "name": "mmproj-model-f16 (通用多模态视觉投影层)",
+      "family": "mmproj",
+      "family_display": "mmproj 视觉投影适配层",
+      "author": "llama.cpp Community",
+      "model_type": "mmproj",
+      "parameters": "Universal ViT",
+      "context_length": 32768,
+      "recommended_for_reverse": false,
+      "description_zh": "兼容 Qwen 3.5 / 3.6 / 3.8 及 LLaVA 架构的通用视觉特征投影层文件。",
+      "description_en": "Universal multimodal vision projection layer compatible with Qwen 3.5/3.6/3.8 series and llama.cpp.",
+      "hf_repo": "ggml-org/models",
+      "ms_repo": "modelscope/llama-cpp-models",
+      "tags": ["mmproj", "通用投影层", "跨架构适配", "llama.cpp原生"],
+      "quantizations": [
+        {
+          "quant": "F16",
+          "file_name": "mmproj-model-f16.gguf",
+          "size_gb": 0.92,
+          "recommended": true,
+          "vram_requirement_gb": 1.1,
+          "description_zh": "通用 F16 投影层：约 920MB，稳定可靠",
+          "description_en": "Universal F16 projector: ~920MB, stable & reliable",
+          "download_urls": {
+            "modelscope": "https://modelscope.cn/models/modelscope/llama-cpp-models/resolve/master/mmproj-model-f16.gguf",
+            "huggingface": "https://huggingface.co/ggml-org/models/resolve/main/mmproj-model-f16.gguf"
+          }
+        }
+      ]
+    }
+  ]
+}

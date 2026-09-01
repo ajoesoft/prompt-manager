@@ -1,0 +1,118 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 169887354867181,
+      "steps": 8,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "28",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "K采样器"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "{{positive_prompt}}",
+      "clip": [
+        "30",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Positive Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "{{negative_prompt}}",
+      "clip": [
+        "30",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Negative Prompt)"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "31",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  },
+  "13": {
+    "inputs": {
+      "width": {{image_wdith}},
+      "height": {{image_height}},
+      "batch_size": 1
+    },
+    "class_type": "EmptySD3LatentImage",
+    "_meta": {
+      "title": "空Latent图像（SD3）"
+    }
+  },
+  "28": {
+    "inputs": {
+      "UNKNOWN": "z-image-turbo-iq4_nl.gguf"
+    },
+    "_meta": {}
+  },
+  "30": {
+    "inputs": {
+      "UNKNOWN": "qwen3_4b_f32-iq4_nl.gguf",
+      "UNKNOWN_1": "lumina2",
+      "UNKNOWN_2": "default"
+    },
+    "_meta": {}
+  },
+  "31": {
+    "inputs": {
+      "UNKNOWN": "pig_flux_vae_fp32-f16.gguf"
+    },
+    "_meta": {}
+  }
+}

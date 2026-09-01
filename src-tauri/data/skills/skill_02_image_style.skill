@@ -1,0 +1,33 @@
+# skill_02_image_style.skill
+stage_name: 媒介画风与艺术流派细解
+version: 2.0
+language_control:
+  supported_languages: ["zh", "en"]
+  default_language: "zh"
+  rules:
+    zh: "流派名称、视觉氛围与媒介以中文专业艺术鉴赏词汇表述"
+    en: "Artistic movements, visual mood, and creative mediums must be output in English"
+system_prompt: >
+  你是艺术史学者与数字绘画鉴赏家。基于阶段1的多维度分类基础，精准识别画面中所呈现的具体美术流派、画风技法、艺术媒介与风格权重分配。
+output_schema:
+  type: object
+  properties:
+    style:
+      type: array
+      items:
+        type: string
+      description: 风格标签数组 (1-4个)
+    style_weight:
+      type: array
+      items:
+        type: number
+      description: 对应的风格权重比例 (总和约1.0)
+    visual_mood:
+      type: string
+      description: 整体视觉氛围
+    medium:
+      type: string
+      description: 艺术表现媒介
+  required: ["style", "style_weight"]
+retry: 2
+timeout: 15

@@ -1,0 +1,48 @@
+# skill_06_prompt_generate.skill
+stage_name: 多文生图模型专有提示词结构化组装
+version: 2.0
+language_control:
+  supported_languages: ["zh", "en"]
+  default_language: "zh"
+  rules:
+    zh: "按照目标文生图模型（KREA 2 TURBO, z image-turbo, qwen-image-2512, flux2, stable diffusion 3, SDXL, Midjourney, LTX Video）语法规范输出专有提示词与负向词"
+    en: "Assemble specialized prompt syntax for target image models (Krea 2, Z-Image, Qwen-Image, Flux 2, SD3, SDXL, Midjourney, LTX Video)"
+system_prompt: >
+  你是顶级 Prompt 架构工程师。综合前5个阶段的结构化析出数据，按照目标生图模型的最优语法范式生成高表现力正向与负向提示词：
+  - KREA 2 TURBO：高浓缩自然语言 + 核心美学流派 + 强视觉冲击，适合实时流式生图 (cfg 2.0, steps 8)
+  - z image-turbo：极致超快生图，紧凑主体 + 动态构图 + 8k uhd, masterpiece 语法 (cfg 2.5, steps 10)
+  - qwen-image-2512：通义万相旗舰，中英双语高保真画质，极擅长中文国风修仙/古风/二次元/写实 (cfg 6.5, steps 30)
+  - flux2：FLUX.2/FLUX.1 纯自然语言长句叙述，无需负面提示词，对镜头光影与真实质感还原极佳 (cfg 3.5, steps 28)
+  - stable diffusion 3：SD3.5 T5-XXL 长文本语义 + CLIP 关键词融合，构图与色彩精准度极高 (cfg 4.5, steps 28)
+  - SDXL 1.0：Danbooru 标签 + 镜头器材权重 + 质量增强修饰词 + 丰富负向词 (cfg 7.0, steps 30)
+  - Midjourney v6.1：艺术概念短语 + 摄影机位 + --ar 16:9 --v 6.1 --style raw 参数
+  - LTX Video：镜头运镜 Track/Pan/Tilt + 物理连续动态 + 动作时间序列
+output_schema:
+  type: object
+  properties:
+    positive:
+      type: string
+      description: 针对当前目标模型的正向提示词
+    negative:
+      type: string
+      description: 定制的负向排除提示词
+    target_model:
+      type: string
+      description: 当前目标模型名称
+    suggested_params:
+      type: object
+      properties:
+        cfg_scale:
+          type: number
+        steps:
+          type: number
+        sampler:
+          type: string
+        aspect_ratio:
+          type: string
+    all_model_prompts:
+      type: object
+      description: 各个主流文生图模型的全量专有提示词映射表
+  required: ["positive", "negative", "target_model"]
+retry: 2
+timeout: 20

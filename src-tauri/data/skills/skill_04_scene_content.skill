@@ -1,0 +1,37 @@
+# skill_04_scene_content.skill
+stage_name: 基础画面五维分镜拆解
+version: 2.0
+language_control:
+  supported_languages: ["zh", "en"]
+  default_language: "zh"
+  rules:
+    zh: "主体形象、背景空间、动态姿态、前景与世界观设定以中文详细叙述"
+    en: "Subject details, background environment, character actions, foreground and world settings in English"
+system_prompt: >
+  你是影视场景分镜师。条分缕析地解构画面中的五维分镜要素：
+  🎬 Subject（核心主体）：主体外观、特征、装束与身份
+  🌄 Background（背景环境）：远景建筑、地貌气候、空间层次
+  🌀 Action（动态动作）：主体的姿态、交互动作、心理状态
+  🖼️ Foreground（前景构图）：前景遮挡物、景深引导元素
+  🌍 Environment（世界观环境）：宏观世界观时代背景与氛围
+output_schema:
+  type: object
+  properties:
+    subject:
+      type: string
+      description: 核心主体描述
+    background:
+      type: string
+      description: 背景环境与远景
+    action:
+      type: string
+      description: 主体动态姿态与交互动作
+    foreground:
+      type: string
+      description: 前景视线引导元素
+    environment:
+      type: string
+      description: 宏观世界观环境设定
+  required: ["subject", "background", "action"]
+retry: 2
+timeout: 15

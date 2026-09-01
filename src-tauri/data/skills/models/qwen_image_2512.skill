@@ -1,0 +1,16 @@
+# qwen_image_2512.skill
+model_id: "qwen_image_2512"
+model_name: "qwen-image-2512"
+stage_name: "通义万相 Qwen-Image 2512 中英双语旗舰提示词格式化输出"
+version: "2.0"
+characteristics:
+  - "中英双模态多语言原生理解"
+  - "国风修仙/仙侠/古典华夏美学精通"
+  - "高度保真主体姿态与真实影视级材质"
+template_syntax: "高画质电影级画面，{subject}，正在{action}，身处{background}，宏观背景呈现{environment}。光影效果采用{light}，整体色调为{color_tone}，镜头构图为{composition}，微观细节表现出{detail}。整体风格呈现{style_list}，视觉氛围充满{visual_mood}。masterpiece, highly detailed, 8k resolution."
+negative_syntax: "画面模糊，低画质，肢体畸变，多余手指，色彩过曝，噪点过大，水印文字"
+default_params:
+  cfg_scale: 6.5
+  steps: 30
+  sampler: "FlowMatchEuler"
+  aspect_ratio: "16:9"

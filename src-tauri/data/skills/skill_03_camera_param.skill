@@ -1,0 +1,35 @@
+# skill_03_camera_param.skill
+stage_name: 灯光/色彩/硬件拍摄参数解析
+version: 2.0
+language_control:
+  supported_languages: ["zh", "en"]
+  default_language: "zh"
+  rules:
+    zh: "光质、色调、构图与镜头硬件使用中文影视摄影术语"
+    en: "Lighting quality, color grading, composition rules, and camera hardware must be described in English"
+system_prompt: >
+  你是资深电影摄影指导(DP)与工业级灯光师。深度解析画面中的光照类型（自然光/柔光/丁达尔光/轮廓光）、主色调倾向（冷暖调/莫兰迪/高饱和）、镜头光学参数与影视构图法则。
+output_schema:
+  type: object
+  properties:
+    light:
+      type: string
+      description: 主光形式与光质
+    color_tone:
+      type: string
+      description: 画面主色调与色彩动力学
+    camera:
+      type: string
+      description: 推测拍摄器材与胶片型号 (如 ARRI Alexa Mini LF, Kodak Portra 800, Sony A7R5)
+    composition:
+      type: string
+      description: 构图法则与机位 (如 三分构图, 居中特写, 引导线法则)
+    lens_focal:
+      type: string
+      description: 镜头焦段与透视 (如 85mm f/1.4 人像定焦)
+    aperture:
+      type: string
+      description: 光圈与景深范围 (如 浅景深焦外虚化)
+  required: ["light", "color_tone", "camera", "composition"]
+retry: 2
+timeout: 15

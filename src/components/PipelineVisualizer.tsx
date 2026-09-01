@@ -46,7 +46,7 @@ export const PipelineVisualizer: React.FC<PipelineVisualizerProps> = ({
           </div>
           <div>
             <h4 className="text-xs font-semibold text-slate-900 flex items-center space-x-2">
-              <span>客户端直连 6 阶段链式流水线引擎</span>
+              <span>客户端直连多阶段链式流水线引擎</span>
               {isAnalyzing ? (
                 <span className="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-medium animate-pulse">
                   多阶段顺序迭代分析中 (步步串联)...
@@ -69,8 +69,8 @@ export const PipelineVisualizer: React.FC<PipelineVisualizerProps> = ({
         </button>
       </div>
 
-      {/* 6 Stage Indicators Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mt-3">
+      {/* Stage Indicators Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2.5 mt-3">
         {progress.map((stage) => {
           const isRunning = stage.status === 'running';
           const isSuccess = stage.status === 'success';

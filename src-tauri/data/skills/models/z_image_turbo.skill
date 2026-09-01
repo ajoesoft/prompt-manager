@@ -1,0 +1,16 @@
+# z_image_turbo.skill
+model_id: "z_image_turbo"
+model_name: "z image-turbo"
+stage_name: "Z-Image Turbo 极速文生图专有提示词格式化输出"
+version: "2.0"
+characteristics:
+  - "超短延迟极速推理 (10 steps)"
+  - "紧凑主体结构与动态构图"
+  - "高锐度 8k uhd 与 masterpiece 强化修饰"
+template_syntax: "masterpiece, ultra-sharp focus, {subject}, {action}, dynamic {composition}, backdrop of {background}, illuminated by {light}, {color_tone}, {detail}, {style_list}, 8k uhd"
+negative_syntax: "deformed, blurry, bad anatomy, extra limbs, low quality, pixelated, washed out, watermark, text"
+default_params:
+  cfg_scale: 2.5
+  steps: 10
+  sampler: "DPM++ 2M Turbo"
+  aspect_ratio: "16:9"

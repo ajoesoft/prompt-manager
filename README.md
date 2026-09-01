@@ -93,6 +93,40 @@ llama-server \
   --top-p 0.95 \
   --top-k 20 \
   --min-p 0.0
+
+
+
+```
+llama-server -h
+```
+
+llama-server \
+  -m ./Qwen3.5-9b-heretic-v2-q8_0.gguf \
+  --mmproj ./mmproj-F16.gguf \
+  --jinja \
+  --reasoning off \
+  -ngl 40 \
+  -c 32768 \
+  -fa on \
+  --cache-type-k q8_0 \
+  --cache-type-v q8_0 \
+  --image-min-tokens 1024 \
+  --port 8080 \
+  --host 0.0.0.0 \
+  --parallel 1 \
+  --temp 0.7 \
+  --top-p 0.95 \
+  --top-k 20 \
+  --min-p 0.0 \
+  --ui
+
+  --api-key "sk‑ikSZKhdcvCQ4vrprt02GWZSbo9ZEIZao"
+
+
+
+
+
+
 ```
 
 Visit `http://localhost:3000` in your browser.

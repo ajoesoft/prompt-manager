@@ -1,0 +1,16 @@
+# midjourney_v6.skill
+model_id: "midjourney_v6"
+model_name: "Midjourney v6.1"
+stage_name: "Midjourney v6.1 艺术短语与命令行参数专有提示词格式化输出"
+version: "2.0"
+characteristics:
+  - "艺术氛围概念短语与摄影机位"
+  - "内置参数尾缀 (--ar, --v, --style, --c)"
+  - "精简无冗余"
+template_syntax: "{style_list} aesthetic of {subject}, {action}, in the backdrop of {background}, {light}, cinematic color grading with {color_tone}, {camera}, {detail}, highly atmospheric --ar 16:9 --v 6.1 --style raw --c 5"
+negative_syntax: "--no blurry, deformed, cartoonish, low resolution, bad hands, oversaturated"
+default_params:
+  cfg_scale: 6.0
+  steps: 25
+  sampler: "Midjourney Internal"
+  aspect_ratio: "16:9"

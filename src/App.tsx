@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { usePromptStore } from './store/promptStore';
 import { DesktopHeader } from './components/DesktopHeader';
 import { SideCollapseTree } from './components/SideCollapseTree';
+import { RightProjectSidebar } from './components/RightProjectSidebar';
 import { PromptResultCard } from './components/PromptResultCard';
 import { PipelineVisualizer } from './components/PipelineVisualizer';
 import { ImageDropzone } from './components/ImageDropzone';
@@ -9,6 +10,9 @@ import { EditPromptDialog } from './components/EditPromptDialog';
 import { SettingPanel } from './components/SettingPanel';
 import { BatchExportDialog } from './components/BatchExportDialog';
 import { AboutDialog } from './components/AboutDialog';
+import { ProjectManagementModal } from './components/ProjectManagementModal';
+import { ManualPromptModal } from './components/ManualPromptModal';
+import { PromptElementReplacerModal } from './components/PromptElementReplacerModal';
 import { useLanguage } from './i18n/LanguageContext';
 import { listenTauriDragDrop } from './services/tauriLlamaService';
 import {
@@ -23,9 +27,12 @@ import {
   Search,
   LayoutGrid,
   Columns3,
-  List
+  List,
+  FolderKanban,
+  PenTool,
+  Wand2
 } from 'lucide-react';
-import { HistoryItem } from './types';
+import { HistoryItem, GenerationParams } from './types';
 
 export default function App() {
   const { t } = useLanguage();
@@ -34,10 +41,21 @@ export default function App() {
     filteredHistory,
     categoryStats,
     modelConfig,
-    apiProfiles,
     sqliteStats,
     skillTemplates,
     promptTemplates,
+    projects,
+    activeProjectUuid,
+    setActiveProjectUuid,
+    createProject,
+    updateProject,
+    deleteProject,
+    duplicateProject,
+    isComfyUiBatchRunning,
+    executeItemComfyUi,
+    executeProjectUnexecuted,
+    exportProjectJson,
+    downloadProjectJson,
     filterRule,
     setFilterRule,
     activeItem,
@@ -51,9 +69,6 @@ export default function App() {
     toggleFavorite,
     clearAllHistory,
     saveModelConfig,
-    saveApiProfile,
-    deleteApiProfile,
-    activateApiProfile,
     refreshSqliteStats,
     resetSqliteDatabase,
     updateSkillTemplate,
@@ -63,15 +78,74 @@ export default function App() {
     deletePromptTemplate,
     reAssemblePrompt,
     runReversePipeline,
+    comfyWorkflows,
+    activeComfyWorkflowId,
+    updateComfyWorkflow,
+    addComfyWorkflow,
+    deleteComfyWorkflow,
+    setActiveComfyWorkflowId,
+    resetComfyWorkflows,
+    updateComfyEndpoint,
   } = usePromptStore();
+
+  const activeProject = projects.find((p) => p.uuid === activeProjectUuid) || projects[0] || null;
 
   // Dialog states
   const [showImportModal, setShowImportModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
+  const [showProjectModal, setShowProjectModal] = useState(false);
+  const [showManualPromptModal, setShowManualPromptModal] = useState(false);
+  const [showElementReplacerModal, setShowElementReplacerModal] = useState(false);
+  const [replacerTargetItem, setReplacerTargetItem] = useState<HistoryItem | null>(null);
+  const [replacerBatchItems, setReplacerBatchItems] = useState<HistoryItem[]>([]);
+  const [modalTargetProjectUuid, setModalTargetProjectUuid] = useState<string | null>(null);
+  const [modalStartInEditMode, setModalStartInEditMode] = useState<boolean>(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isRightSidebarCollapsed, setIsRightSidebarCollapsed] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'flow'>('flow');
+
+  const handleOpenProjectModal = (targetUuid?: string, startInEditMode = false) => {
+    setModalTargetProjectUuid(targetUuid || activeProjectUuid || null);
+    setModalStartInEditMode(startInEditMode);
+    setShowProjectModal(true);
+  };
+
+  const handleOpenElementReplacer = (item: HistoryItem) => {
+    setReplacerTargetItem(item);
+    setReplacerBatchItems([]);
+    setShowElementReplacerModal(true);
+  };
+
+  const handleOpenBatchElementReplacer = () => {
+    if (filteredHistory.length > 0) {
+      setReplacerTargetItem(null);
+      setReplacerBatchItems(filteredHistory);
+      setShowElementReplacerModal(true);
+    } else if (historyList.length > 0) {
+      setReplacerTargetItem(null);
+      setReplacerBatchItems(historyList);
+      setShowElementReplacerModal(true);
+    }
+  };
+
+  const handleBatchSaveReplacedItems = (updatedItems: HistoryItem[]) => {
+    updatedItems.forEach((itm) => updateHistoryItem(itm));
+  };
+
+  const handleSaveAsNewFork = (newItem: HistoryItem) => {
+    addHistoryItem(newItem);
+  };
+
+  const handleAddManualPrompt = (newItem: HistoryItem, autoRunComfyUi = false) => {
+    addHistoryItem(newItem);
+    if (autoRunComfyUi) {
+      setTimeout(() => {
+        executeItemComfyUi(newItem.id);
+      }, 300);
+    }
+  };
 
   // Listen for native Tauri drag-and-drop events at root level (Ubuntu Linux / GTK Webview)
   useEffect(() => {
@@ -92,7 +166,14 @@ export default function App() {
   // Handle batch queue or single run from dropzone
   const handleStartAnalysis = async (
     files: { dataUrl: string; name: string; size: number }[],
-    targetModel: string
+    targetModel: string,
+    outputLanguage: 'zh' | 'en' = 'zh',
+    options?: {
+      projectUuid?: string;
+      dimensions?: { width: number; height: number };
+      aspectRatio?: string;
+      generationParams?: GenerationParams;
+    }
   ) => {
     if (isAnalyzing || !files || files.length === 0) return;
     setShowImportModal(false);
@@ -107,7 +188,7 @@ export default function App() {
       }
     }
     for (const file of uniqueFiles) {
-      await runReversePipeline(file, targetModel);
+      await runReversePipeline(file, targetModel, outputLanguage, options);
     }
   };
 
@@ -118,7 +199,14 @@ export default function App() {
         name: item.file_name,
         size: item.file_size_kb * 1024,
       },
-      item.target_model
+      item.target_model,
+      item.output_language || 'zh',
+      {
+        projectUuid: item.project_uuid,
+        dimensions: item.dimensions,
+        aspectRatio: item.aspect_ratio,
+        generationParams: item.generation_params,
+      }
     );
   };
 
@@ -141,6 +229,11 @@ export default function App() {
     }
   };
 
+  const getProjectName = (uuid?: string): string | undefined => {
+    if (!uuid) return undefined;
+    return projects.find((p) => p.uuid === uuid)?.name;
+  };
+
   return (
     <div
       onDragOver={handleWindowDragOver}
@@ -151,10 +244,16 @@ export default function App() {
       <DesktopHeader
         modelConfig={modelConfig}
         totalCount={historyList.length}
+        projects={projects}
+        activeProject={activeProject}
         onOpenSettings={() => setShowSettingsModal(true)}
         onOpenAbout={() => setShowAboutModal(true)}
         onOpenExport={() => setShowExportModal(true)}
         onOpenImportModal={() => setShowImportModal(true)}
+        onOpenProjectModal={() => handleOpenProjectModal()}
+        onOpenManualPromptModal={() => setShowManualPromptModal(true)}
+        onOpenElementReplacerModal={handleOpenBatchElementReplacer}
+        onSelectProject={setActiveProjectUuid}
       />
 
       {/* Main Workspace Area (Sidebar + Content) */}
@@ -223,6 +322,36 @@ export default function App() {
             </div>
 
             <div className="flex items-center space-x-2">
+              {/* Prompt Element Replacer / Style Transformer Quick Button */}
+              <button
+                onClick={handleOpenBatchElementReplacer}
+                className="flex items-center space-x-1 px-3 py-1 rounded-lg bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 text-purple-700 border border-purple-200 text-xs font-semibold shadow-2xs transition"
+                title="拆解画面要素（风格、类型、人物IP、背景、灯光、镜头等）并进行分别替换与风格重塑"
+              >
+                <Wand2 className="w-3.5 h-3.5 text-purple-600" />
+                <span>要素替换重塑</span>
+              </button>
+
+              {/* Manual Write Prompt Quick Button */}
+              <button
+                onClick={() => setShowManualPromptModal(true)}
+                className="flex items-center space-x-1 px-3 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold shadow-2xs transition"
+                title="手动输入正负提示词与参数加入项目"
+              >
+                <PenTool className="w-3.5 h-3.5 text-indigo-600" />
+                <span>手写提示词</span>
+              </button>
+
+              {/* Quick Project Switcher */}
+              <button
+                onClick={() => handleOpenProjectModal()}
+                className="flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-semibold transition"
+                title="项目管理与 ComfyUI 队列调度"
+              >
+                <FolderKanban className="w-3.5 h-3.5 text-blue-600" />
+                <span className="max-w-[120px] truncate">{activeProject?.name || '项目管理'}</span>
+              </button>
+
               <button
                 onClick={() => setViewMode('list')}
                 className={`p-1.5 rounded transition ${
@@ -274,11 +403,17 @@ export default function App() {
                   <PromptResultCard
                     key={item.id}
                     item={item}
+                    projectName={getProjectName(item.project_uuid)}
                     layoutMode={viewMode}
+                    promptTemplates={promptTemplates}
                     onEdit={setActiveItem}
+                    onSave={updateHistoryItem}
                     onDelete={deleteHistoryItem}
                     onToggleFavorite={toggleFavorite}
                     onRerun={handleRerunItem}
+                    onExecuteComfyUi={executeItemComfyUi}
+                    onOpenElementReplacer={handleOpenElementReplacer}
+                    onReassemble={reAssemblePrompt}
                   />
                 ))}
               </div>
@@ -289,13 +424,28 @@ export default function App() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-slate-800">
-                    {t('main.noMatchTitle')}
+                    {activeProject ? `「${activeProject.name}」暂无提示词` : t('main.noMatchTitle')}
                   </h3>
                   <p className="text-xs text-slate-500 mt-1 max-w-sm">
-                    {t('main.noMatchDesc')}
+                    您可以手动编写提示词加入该项目，或导入图片进行视觉反推。
                   </p>
                 </div>
                 <div className="flex items-center space-x-3 pt-2">
+                  <button
+                    onClick={() => setShowManualPromptModal(true)}
+                    className="flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-bold shadow-xs transition"
+                  >
+                    <PenTool className="w-3.5 h-3.5" />
+                    <span>手动添加提示词</span>
+                  </button>
+
+                  <button
+                    onClick={() => setShowImportModal(true)}
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition"
+                  >
+                    {t('main.uploadReverseBtn')}
+                  </button>
+
                   <button
                     onClick={() =>
                       setFilterRule({
@@ -307,21 +457,30 @@ export default function App() {
                         sortBy: 'date_desc',
                       })
                     }
-                    className="px-3.5 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs border border-slate-200 shadow-xs transition"
+                    className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs border border-slate-200 shadow-xs transition"
                   >
                     {t('main.resetFilterBtn')}
-                  </button>
-                  <button
-                    onClick={() => setShowImportModal(true)}
-                    className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition"
-                  >
-                    {t('main.uploadReverseBtn')}
                   </button>
                 </div>
               </div>
             )}
           </div>
         </main>
+
+        {/* Right Project List Sidebar with Modify & Delete Icons */}
+        <RightProjectSidebar
+          projects={projects}
+          activeProjectUuid={activeProjectUuid}
+          historyList={historyList}
+          promptTemplates={promptTemplates}
+          onSelectProject={setActiveProjectUuid}
+          onOpenProjectModal={handleOpenProjectModal}
+          onCreateProject={createProject}
+          onUpdateProject={updateProject}
+          onDeleteProject={deleteProject}
+          isCollapsed={isRightSidebarCollapsed}
+          onToggleCollapse={() => setIsRightSidebarCollapsed(!isRightSidebarCollapsed)}
+        />
       </div>
 
       {/* MODAL 1: Image Import & Batch Dropzone */}
@@ -329,6 +488,13 @@ export default function App() {
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <ImageDropzone
             promptTemplates={promptTemplates}
+            projects={projects}
+            activeProject={activeProject}
+            onSelectProject={setActiveProjectUuid}
+            onOpenProjectModal={() => {
+              setShowImportModal(false);
+              setShowProjectModal(true);
+            }}
             isAnalyzing={isAnalyzing}
             onStartAnalysis={handleStartAnalysis}
             onClose={() => setShowImportModal(false)}
@@ -351,14 +517,18 @@ export default function App() {
       {showSettingsModal && (
         <SettingPanel
           modelConfig={modelConfig}
-          apiProfiles={apiProfiles}
           sqliteStats={sqliteStats}
           skillTemplates={skillTemplates}
           promptTemplates={promptTemplates}
+          comfyWorkflows={comfyWorkflows}
+          activeComfyWorkflowId={activeComfyWorkflowId}
+          onUpdateComfyWorkflow={updateComfyWorkflow}
+          onAddComfyWorkflow={addComfyWorkflow}
+          onDeleteComfyWorkflow={deleteComfyWorkflow}
+          onSetActiveComfyWorkflowId={setActiveComfyWorkflowId}
+          onResetComfyWorkflows={resetComfyWorkflows}
+          onUpdateComfyEndpoint={updateComfyEndpoint}
           onSaveModelConfig={saveModelConfig}
-          onSaveApiProfile={saveApiProfile}
-          onDeleteApiProfile={deleteApiProfile}
-          onActivateApiProfile={activateApiProfile}
           onRefreshSqliteStats={refreshSqliteStats}
           onResetSqliteDatabase={resetSqliteDatabase}
           onUpdateSkillTemplate={updateSkillTemplate}
@@ -379,11 +549,69 @@ export default function App() {
         />
       )}
 
-      {/* MODAL 5: About Dialog */}
+      {/* MODAL 5: Project Management & ComfyUI Queue Modal */}
+      {showProjectModal && (
+        <ProjectManagementModal
+          projects={projects}
+          activeProjectUuid={activeProjectUuid}
+          initialProjectUuid={modalTargetProjectUuid}
+          initialEditing={modalStartInEditMode}
+          historyList={historyList}
+          promptTemplates={promptTemplates}
+          onSelectProject={setActiveProjectUuid}
+          onSelectActiveProject={setActiveProjectUuid}
+          onCreateProject={createProject}
+          onUpdateProject={updateProject}
+          onDeleteProject={deleteProject}
+          onDuplicateProject={duplicateProject}
+          onExecuteItem={executeItemComfyUi}
+          onExecuteProjectUnexecuted={executeProjectUnexecuted}
+          onExecuteUnexecuted={executeProjectUnexecuted}
+          onExportProjectJson={exportProjectJson}
+          onDownloadProjectJson={downloadProjectJson}
+          isComfyUiBatchRunning={isComfyUiBatchRunning}
+          onClose={() => setShowProjectModal(false)}
+        />
+      )}
+
+      {/* MODAL 6: Manual Prompt Writer Modal */}
+      {showManualPromptModal && (
+        <ManualPromptModal
+          isOpen={showManualPromptModal}
+          onClose={() => setShowManualPromptModal(false)}
+          projects={projects}
+          activeProjectUuid={activeProjectUuid}
+          promptTemplates={promptTemplates}
+          onAddPrompt={handleAddManualPrompt}
+        />
+      )}
+
+      {/* MODAL 7: Prompt Element Replacer & Style Transformer Modal */}
+      {showElementReplacerModal && (
+        <PromptElementReplacerModal
+          isOpen={showElementReplacerModal}
+          onClose={() => {
+            setShowElementReplacerModal(false);
+            setReplacerTargetItem(null);
+            setReplacerBatchItems([]);
+          }}
+          item={replacerTargetItem}
+          batchItems={replacerBatchItems}
+          promptTemplates={promptTemplates}
+          projectName={activeProject?.name}
+          onSaveItem={(updated) => updateHistoryItem(updated)}
+          onSaveAsNewFork={handleSaveAsNewFork}
+          onBatchSaveItems={handleBatchSaveReplacedItems}
+          onExecuteComfyUi={executeItemComfyUi}
+        />
+      )}
+
+      {/* MODAL 8: About Dialog */}
       {showAboutModal && (
         <AboutDialog onClose={() => setShowAboutModal(false)} />
       )}
     </div>
   );
 }
+
 

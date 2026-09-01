@@ -1,4 +1,4 @@
-import { ModelConfig, ApiProfile, SqliteDatabaseInfo } from '../types';
+import { ModelConfig, SqliteDatabaseInfo } from '../types';
 
 // Check if running inside the Tauri native desktop container
 export function isTauri(): boolean {
@@ -178,15 +178,11 @@ export async function tauriTestConnection(config: ModelConfig): Promise<TauriCon
     try {
       const res: TauriConnectionResult = await invoke('test_connection', {
         req: {
-          run_mode: config.run_mode || 'local',
+          run_mode: 'local',
           llama_host: config.llama_host || '127.0.0.1',
           llama_port: config.llama_port || 8080,
           main_gguf: config.main_gguf,
           mmproj_gguf: config.mmproj_gguf,
-          api_endpoint: config.api_endpoint,
-          api_model: config.api_model,
-          api_key: config.api_key,
-          api_provider: config.api_provider,
         },
       });
       return res;
@@ -195,49 +191,36 @@ export async function tauriTestConnection(config: ModelConfig): Promise<TauriCon
     }
   }
 
-  // Client-side execution without server.ts
-  const runMode = config.run_mode || 'local';
-  if (runMode === 'local') {
-    const host = config.llama_host || '127.0.0.1';
-    const port = config.llama_port || 8080;
-    const localUrl = `http://${host}:${port}`;
-    let isLive = false;
-    let latency = 25;
+  // Client-side execution check
+  const host = config.llama_host || '127.0.0.1';
+  const port = config.llama_port || 8080;
+  const localUrl = `http://${host}:${port}`;
+  let isLive = false;
+  let latency = 25;
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1200);
-      const start = Date.now();
-      const pingRes = await fetch(`${localUrl}/health`, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (pingRes.ok) {
-        isLive = true;
-        latency = Date.now() - start;
-      }
-    } catch {}
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1200);
+    const start = Date.now();
+    const pingRes = await fetch(`${localUrl}/health`, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (pingRes.ok) {
+      isLive = true;
+      latency = Date.now() - start;
+    }
+  } catch {}
 
-    return {
-      success: true,
-      mode: 'local',
-      endpoint: localUrl,
-      message: isLive
-        ? `llama.cpp 实时服务已连接 (${localUrl}): Qwen3.5 视觉投影已就绪`
-        : `llama.cpp 配置已就绪: ${config.main_gguf || 'Qwen3.5-9B-Q4_K_M.gguf'} + ${config.mmproj_gguf || 'mmproj-F16.gguf'} (端口: ${port})`,
-      latency_ms: latency,
-      is_live_server: isLive,
-      device: 'CUDA / Metal GPU Acceleration (Offload -ngl 99)',
-    };
-  } else {
-    return {
-      success: true,
-      mode: 'online',
-      endpoint: config.api_endpoint || 'https://generativelanguage.googleapis.com',
-      message: `在线端点配置就绪: ${config.api_model || 'gemini-3.7-flash'} (${(config.api_provider || 'GEMINI').toUpperCase()})`,
-      latency_ms: 70,
-      is_live_server: true,
-      device: 'Cloud Multi-modal API',
-    };
-  }
+  return {
+    success: true,
+    mode: 'local',
+    endpoint: localUrl,
+    message: isLive
+      ? `llama-server 实时服务已连接 (${localUrl}): GGUF 视觉模型就绪`
+      : `llama-server 本地配置已就绪: ${config.main_gguf ? config.main_gguf.split(/[\\/]/).pop() : 'qwen2.5-vl-7b-instruct-q4_k_m.gguf'} (端口: ${port})`,
+    latency_ms: latency,
+    is_live_server: isLive,
+    device: 'CUDA / Metal GPU Acceleration (Offload -ngl 99)',
+  };
 }
 
 /**
@@ -377,3 +360,30 @@ export async function listenTauriDragDrop(
     return null;
   }
 }
+
+/**
+ * Load pipeline skill templates and prompt models from src-tauri/data directory
+ */
+export async function tauriLoadPipelineData(): Promise<{
+  skills: any[];
+  templates: any[];
+  taxonomy: any;
+} | null> {
+  const invoke = await getTauriInvoke();
+  if (invoke && isTauri()) {
+    try {
+      const res = await invoke('load_pipeline_data');
+      if (res) {
+        return {
+          skills: JSON.parse(res.skills_json || '[]'),
+          templates: JSON.parse(res.templates_json || '[]'),
+          taxonomy: JSON.parse(res.taxonomy_json || '{}'),
+        };
+      }
+    } catch (err) {
+      console.warn('[Tauri] load_pipeline_data error, fallback to bundled static data:', err);
+    }
+  }
+  return null;
+}
+

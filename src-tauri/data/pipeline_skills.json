@@ -1,0 +1,68 @@
+[
+  {
+    "id": "skill_01",
+    "skill_name": "skill_01_multidim_classification.skill",
+    "stage_number": 1,
+    "display_title": "图像七维正交分类",
+    "enable": true,
+    "sort_index": 1,
+    "timeout": 15,
+    "retry": 2,
+    "file_content": "# skill_01_multidim_classification.skill\nstage_name: 图像七维正交多维度分类识别\nversion: 2.0\nlanguage_control:\n  supported_languages: [\"zh\", \"en\"]\n  default_language: \"zh\"\n  rules:\n    zh: \"输出七大正交维度分类（主体内容/媒介画风/题材世界观/商业用途/构图镜头/光影色彩/氛围情绪）及高概括标签\"\n    en: \"Output all 7 orthogonal dimensions (Subject/Medium/Worldview/Commercial/Composition/Lighting/Mood) in English\"\nsystem_prompt: >\n  你是资深视觉分类与多模态反推专家。严格按照【图像多维度分类树】的7个独立正交维度进行识别与打标：\n  1. 主体内容维度：人物类（单人/多人/特写/人体/虚拟人形）、景物环境类（自然风景/城市建筑/室内/微观）、物品产品类（服饰/数码/食品/工业/文创武器）、生物动物类（动物/幻想生物/植物）、抽象图形类、综合复合场景。\n  2. 视觉媒介/画风维度：写实类（照片写实/超写实/纪实）、2D手绘类（动画/漫画/插画/像素）、3D渲染类（3D写实/3D卡通/UE Blender/黏土手办）、艺术特效类（赛璐璐/水墨国风/油画水粉/版画/复古胶片）、混合媒介。\n  3. 题材世界观/时代背景维度：现实向（现代都市/近代复古/古风古代/近现代历史）、幻想向（修仙仙侠/玄幻/科幻/奇幻西幻/末世克苏鲁）、架空小众（蒸汽朋克/日式和风/中世纪欧式/乌托邦）、无特定世界观。\n  4. 商业用途维度：影视类（电影镜头/短剧/海报/概念原画）、游戏类（角色场景原画/CG/UI/实机截图）、广告商业图（商品主图/品牌海报/电商穿搭/商业人像）、文创出版、个人创作、素材通用图。\n  5. 构图&镜头维度：景别（特写/近景/中景/全景/远景）、视角（平视/仰拍/俯拍/微距）、构图（中心/三分/对称/框架）、动态（静态/动态模糊/高速抓拍）。\n  6. 光影色彩维度：光照（自然光/柔光/硬光/轮廓光/逆光/丁达尔光/夜景）、色调（冷调/暖调/高饱和/低饱和/莫兰迪/黑白）、画质（高清/8K/胶片颗粒/景深虚化）。\n  7. 情绪氛围维度：治愈清新/宏大史诗/阴郁暗黑/欢快活泼/悬疑紧张/孤寂荒凉/静谧祥和。\noutput_schema:\n  type: object\n  properties:\n    subject_content:\n      type: string\n      description: 维度1：主体内容\n    visual_medium:\n      type: string\n      description: 维度2：媒介画风\n    genre_worldview:\n      type: string\n      description: 维度3：题材世界观\n    commercial_use:\n      type: string\n      description: 维度4：商业用途\n    composition_camera:\n      type: string\n      description: 维度5：构图镜头\n    lighting_color:\n      type: string\n      description: 维度6：光影色彩\n    mood_atmosphere:\n      type: string\n      description: 维度7：情绪氛围\n    confidence:\n      type: number\n      description: 置信度 0.0 ~ 1.0\n    tags:\n      type: array\n      items:\n        type: string\n      description: 5-8个高概括性多维度分类标签\n  required: [\"subject_content\", \"visual_medium\", \"genre_worldview\", \"commercial_use\", \"composition_camera\", \"lighting_color\"]\nretry: 2\ntimeout: 15\n"
+  },
+  {
+    "id": "skill_02",
+    "skill_name": "skill_02_image_style.skill",
+    "stage_number": 2,
+    "display_title": "媒介画风与艺术流派识别",
+    "enable": true,
+    "sort_index": 2,
+    "timeout": 15,
+    "retry": 2,
+    "file_content": "# skill_02_image_style.skill\nstage_name: 媒介画风与艺术流派细解\nversion: 2.0\nlanguage_control:\n  supported_languages: [\"zh\", \"en\"]\n  default_language: \"zh\"\n  rules:\n    zh: \"流派名称、视觉氛围与媒介以中文专业艺术鉴赏词汇表述\"\n    en: \"Artistic movements, visual mood, and creative mediums must be output in English\"\nsystem_prompt: >\n  你是艺术史学者与数字绘画鉴赏家。基于阶段1的多维度分类基础，精准识别画面中所呈现的具体美术流派、画风技法、艺术媒介与风格权重分配。\noutput_schema:\n  type: object\n  properties:\n    style:\n      type: array\n      items:\n        type: string\n      description: 风格标签数组 (1-4个，如: 照片写实, 新古典主义, 赛璐璐, 水墨写意, 3D UE5渲染)\n    style_weight:\n      type: array\n      items:\n        type: number\n      description: 对应的风格权重比例 (总和约1.0)\n    visual_mood:\n      type: string\n      description: 整体视觉氛围\n    medium:\n      type: string\n      description: 艺术表现媒介\n  required: [\"style\", \"style_weight\"]\nretry: 2\ntimeout: 15\n"
+  },
+  {
+    "id": "skill_03",
+    "skill_name": "skill_03_camera_param.skill",
+    "stage_number": 3,
+    "display_title": "光影/色彩/硬件参数解析",
+    "enable": true,
+    "sort_index": 3,
+    "timeout": 15,
+    "retry": 2,
+    "file_content": "# skill_03_camera_param.skill\nstage_name: 灯光/色彩/硬件拍摄参数解析\nversion: 2.0\nlanguage_control:\n  supported_languages: [\"zh\", \"en\"]\n  default_language: \"zh\"\n  rules:\n    zh: \"光质、色调、构图与镜头硬件使用中文影视摄影术语\"\n    en: \"Lighting quality, color grading, composition rules, and camera hardware must be described in English\"\nsystem_prompt: >\n  你是资深电影摄影指导(DP)与工业级灯光师。深度解析画面中的光照类型（自然光/柔光/丁达尔光/轮廓光）、主色调倾向（冷暖调/莫兰迪/高饱和）、镜头光学参数与影视构图法则。\noutput_schema:\n  type: object\n  properties:\n    light:\n      type: string\n      description: 主光形式与光质 (如: 逆光丁达尔光, 柔和漫射光, 轮廓光)\n    color_tone:\n      type: string\n      description: 画面主色调与色彩动力学 (如: 暖奶油主调, 莫兰迪低饱和)\n    camera:\n      type: string\n      description: 推测拍摄器材与胶片型号 (如: ARRI Alexa Mini LF, Kodak Portra 800, Sony A7R5)\n    composition:\n      type: string\n      description: 构图法则与机位 (如: 三分构图, 居中特写, 引导线法则)\n    lens_focal:\n      type: string\n      description: 镜头焦段与透视 (如: 85mm f/1.4 人像定焦)\n    aperture:\n      type: string\n      description: 光圈与景深范围 (如: 浅景深焦外虚化)\n  required: [\"light\", \"color_tone\", \"camera\", \"composition\"]\nretry: 2\ntimeout: 15\n"
+  },
+  {
+    "id": "skill_04",
+    "skill_name": "skill_04_scene_content.skill",
+    "stage_number": 4,
+    "display_title": "基础画面五维分镜拆解",
+    "enable": true,
+    "sort_index": 4,
+    "timeout": 15,
+    "retry": 2,
+    "file_content": "# skill_04_scene_content.skill\nstage_name: 基础画面五维分镜拆解\nversion: 2.0\nlanguage_control:\n  supported_languages: [\"zh\", \"en\"]\n  default_language: \"zh\"\n  rules:\n    zh: \"主体形象、背景空间、动态姿态、前景与世界观设定以中文详细叙述\"\n    en: \"Subject details, background environment, character actions, foreground and world settings in English\"\nsystem_prompt: >\n  你是影视场景分镜师。条分缕析地解构画面中的五维分镜要素：\n  🎬 Subject（核心主体）：主体外观、特征、装束与身份\n  🌄 Background（背景环境）：远景建筑、地貌气候、空间层次\n  🌀 Action（动态动作）：主体的姿态、交互动作、心理状态\n  🖼️ Foreground（前景构图）：前景遮挡物、景深引导元素\n  🌍 Environment（世界观环境）：宏观世界观时代背景与氛围\noutput_schema:\n  type: object\n  properties:\n    subject:\n      type: string\n      description: 核心主体描述\n    background:\n      type: string\n      description: 背景环境与远景\n    action:\n      type: string\n      description: 主体动态姿态与交互动作\n    foreground:\n      type: string\n      description: 前景视线引导元素\n    environment:\n      type: string\n      description: 宏观世界观环境设定\n  required: [\"subject\", \"background\", \"action\"]\nretry: 2\ntimeout: 15\n"
+  },
+  {
+    "id": "skill_05",
+    "skill_name": "skill_05_detail_desc.skill",
+    "stage_number": 5,
+    "display_title": "细粒度微观细节与情绪刻画",
+    "enable": true,
+    "sort_index": 5,
+    "timeout": 20,
+    "retry": 2,
+    "file_content": "# skill_05_detail_desc.skill\nstage_name: 细粒度微观细节与情绪刻画\nversion: 2.0\nlanguage_control:\n  supported_languages: [\"zh\", \"en\"]\n  default_language: \"zh\"\n  rules:\n    zh: \"微观材质、皮肤毛孔、发丝织物与情绪心态以细腻中文刻画\"\n    en: \"Micro-textures, skin pores, fabric weaves, and psychological emotional tensions in English\"\nsystem_prompt: >\n  你是微观视觉观察家。聚焦于画面的超高精度细节：如人物的面部五官微表情、发丝光泽、服装褶皱与缝线、材质表面反光与微小磨损，以及画面所传递的情绪张力与心理深度。\noutput_schema:\n  type: object\n  properties:\n    detail:\n      type: string\n      description: 极度细腻的微观细节描述 (皮肤纹理/布料工艺/金属光泽/风化磨损)\n    emotion:\n      type: string\n      description: 画面或人物传递的情绪张力与心理状态\n    textures:\n      type: string\n      description: 显著的物理材质特征\n    attire_or_props:\n      type: string\n      description: 服饰配饰或手持核心道具特征\n  required: [\"detail\", \"emotion\"]\nretry: 2\ntimeout: 20\n"
+  },
+  {
+    "id": "skill_06",
+    "skill_name": "skill_06_prompt_generate.skill",
+    "stage_number": 6,
+    "display_title": "多文生图模型专有提示词组装",
+    "enable": true,
+    "sort_index": 6,
+    "timeout": 20,
+    "retry": 2,
+    "file_content": "# skill_06_prompt_generate.skill\nstage_name: 多文生图模型专有提示词结构化组装\nversion: 2.0\nlanguage_control:\n  supported_languages: [\"zh\", \"en\"]\n  default_language: \"zh\"\n  rules:\n    zh: \"按照目标文生图模型（KREA 2 TURBO, z image-turbo, qwen-image-2512, flux2, stable diffusion 3, SDXL, Midjourney, LTX Video）语法规范输出专有提示词与负向词\"\n    en: \"Assemble specialized prompt syntax for target image models (Krea 2, Z-Image, Qwen-Image, Flux 2, SD3, SDXL, Midjourney, LTX Video)\"\nsystem_prompt: >\n  你是顶级 Prompt 架构工程师。综合前5个阶段的结构化析出数据，按照目标生图模型的最优语法范式生成高表现力正向与负向提示词：\n  - KREA 2 TURBO：高浓缩自然语言 + 核心美学流派 + 强视觉冲击，适合实时流式生图 (cfg 2.0, steps 8)\n  - z image-turbo：极致超快生图，紧凑主体 + 动态构图 + 8k uhd, masterpiece 语法 (cfg 2.5, steps 10)\n  - qwen-image-2512：通义万相旗舰，中英双语高保真画质，极擅长中文国风修仙/古风/二次元/写实 (cfg 6.5, steps 30)\n  - flux2：FLUX.2/FLUX.1 纯自然语言长句叙述，无需负面提示词，对镜头光影与真实质感还原极佳 (cfg 3.5, steps 28)\n  - stable diffusion 3：SD3.5 T5-XXL 长文本语义 + CLIP 关键词融合，构图与色彩精准度极高 (cfg 4.5, steps 28)\n  - SDXL 1.0：Danbooru 标签 + 镜头器材权重 + 质量增强修饰词 + 丰富负向词 (cfg 7.0, steps 30)\n  - Midjourney v6.1：艺术概念短语 + 摄影机位 + --ar 16:9 --v 6.1 --style raw 参数\n  - LTX Video：镜头运镜 Track/Pan/Tilt + 物理连续动态 + 动作时间序列\noutput_schema:\n  type: object\n  properties:\n    positive:\n      type: string\n      description: 针对当前目标模型的正向提示词\n    negative:\n      type: string\n      description: 定制的负向排除提示词\n    target_model:\n      type: string\n      description: 当前目标模型名称\n    suggested_params:\n      type: object\n      properties:\n        cfg_scale:\n          type: number\n        steps:\n          type: number\n        sampler:\n          type: string\n        aspect_ratio:\n          type: string\n    all_model_prompts:\n      type: object\n      description: 各个主流文生图模型的全量专有提示词映射表\n  required: [\"positive\", \"negative\", \"target_model\"]\nretry: 2\ntimeout: 20\n"
+  }
+]

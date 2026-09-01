@@ -1,0 +1,29 @@
+# skill_05_detail_desc.skill
+stage_name: 细粒度微观细节与情绪刻画
+version: 2.0
+language_control:
+  supported_languages: ["zh", "en"]
+  default_language: "zh"
+  rules:
+    zh: "微观材质、皮肤毛孔、发丝织物与情绪心态以细腻中文刻画"
+    en: "Micro-textures, skin pores, fabric weaves, and psychological emotional tensions in English"
+system_prompt: >
+  你是微观视觉观察家。聚焦于画面的超高精度细节：如人物的面部五官微表情、发丝光泽、服装褶皱与缝线、材质表面反光与微小磨损，以及画面所传递的情绪张力与心理深度。
+output_schema:
+  type: object
+  properties:
+    detail:
+      type: string
+      description: 极度细腻的微观细节描述 (皮肤纹理/布料工艺/金属光泽/风化磨损)
+    emotion:
+      type: string
+      description: 画面或人物传递的情绪张力与心理状态
+    textures:
+      type: string
+      description: 显著的物理材质特征
+    attire_or_props:
+      type: string
+      description: 服饰配饰或手持核心道具特征
+  required: ["detail", "emotion"]
+retry: 2
+timeout: 20

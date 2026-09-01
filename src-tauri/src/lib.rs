@@ -1,7 +1,7 @@
 pub mod llama;
 pub mod db;
 
-use llama::{call_llama_server, check_llama_health, test_connection, get_system_info, read_image_files};
+use llama::{call_llama_server, check_llama_health, test_connection, get_system_info, read_image_files, load_pipeline_data};
 use db::{get_sqlite_stats, DbState};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -20,7 +20,9 @@ pub fn run() {
             get_system_info,
             get_sqlite_stats,
             read_image_files,
+            load_pipeline_data,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+

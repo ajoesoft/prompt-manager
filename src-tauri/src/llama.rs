@@ -352,3 +352,45 @@ pub fn get_system_info() -> SystemInfoResponse {
         engine: "Tauri Native Desktop (No server.ts required)".to_string(),
     }
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PipelineDataResponse {
+    pub skills_json: String,
+    pub templates_json: String,
+    pub taxonomy_json: String,
+}
+
+/// Loads pipeline skills, prompt templates, and image classification taxonomy from data directory
+#[tauri::command]
+pub fn load_pipeline_data() -> Result<PipelineDataResponse, String> {
+    let base_paths = vec![
+        std::path::PathBuf::from("data"),
+        std::path::PathBuf::from("src-tauri/data"),
+        std::path::PathBuf::from("../src-tauri/data"),
+    ];
+
+    let mut found_dir: Option<std::path::PathBuf> = None;
+    for p in base_paths {
+        if p.exists() && p.is_dir() {
+            found_dir = Some(p);
+            break;
+        }
+    }
+
+    let dir = found_dir.unwrap_or_else(|| std::path::PathBuf::from("data"));
+
+    let skills_path = dir.join("pipeline_skills.json");
+    let templates_path = dir.join("prompt_templates.json");
+    let taxonomy_path = dir.join("image_classification_taxonomy.json");
+
+    let skills_json = std::fs::read_to_string(&skills_path).unwrap_or_else(|_| "[]".to_string());
+    let templates_json = std::fs::read_to_string(&templates_path).unwrap_or_else(|_| "[]".to_string());
+    let taxonomy_json = std::fs::read_to_string(&taxonomy_path).unwrap_or_else(|_| "{}".to_string());
+
+    Ok(PipelineDataResponse {
+        skills_json,
+        templates_json,
+        taxonomy_json,
+    })
+}
+

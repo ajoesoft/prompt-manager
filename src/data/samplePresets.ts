@@ -335,5 +335,81 @@ Aperture: f/1.4 极致浅景深
         }
       }
     }
+  },
+  {
+    id: 'sample_04_game_asset_sword',
+    origin_path: '/samples/game_asset_runic_sword.png',
+    thumb_path: 'https://images.unsplash.com/photo-1595590424283-b8f17842773f?auto=format&fit=crop&w=600&q=80',
+    file_name: 'game_asset_frost_rune_greatsword.png',
+    file_size_kb: 1420,
+    dimensions: { width: 1024, height: 1024 },
+    create_at: '2026-08-25 14:20:00',
+    target_model: 'Z-Image Turbo',
+    positive_prompt: 'masterpiece, ultra-sharp focus, game asset, 3d weapon prop, epic two-handed greatsword with ancient glowing runes, floating dynamically, isolated on solid clean white background, game ready asset, illuminated by cool cyan emissive glow and rim lighting, metallic reflection, intricate Damascus steel blade etchings, dark obsidian hilt, Unreal Engine 5 render, Nanite, Lumen, PBR materials, asset store quality, 8k uhd',
+    negative_prompt: 'deformed, blurry, bad anatomy, low quality, pixelated, washed out, watermark, noisy background, text',
+    is_favorite: true,
+    execution_time_ms: 1850,
+    notes: '游戏资产反推样例：含UE5 PBR规范、隔离白底、道具视角与游戏品类适配',
+    skill_result_json: {
+      skill_01_multidim_classification: {
+        subject_content: '游戏资产与道具模型 (Game Weapon Prop)',
+        visual_medium: '3D数字资产与次世代PBR渲染 (3D Game Ready Asset)',
+        genre_worldview: '暗黑高魔奇幻 (Dark High Fantasy)',
+        commercial_use: '游戏道具资产库 / 虚幻引擎商城 (Game Asset Store)',
+        composition_camera: '正交单品隔离视角 (Orthographic Isolated 3D View)',
+        lighting_color: '冷青发光符文 + 金属高光高对比',
+        mood_atmosphere: '史诗肃穆, 寒霜凌厉',
+        confidence: 0.99
+      },
+      skill_02_image_style: {
+        style: ['次世代PBR写实', '暗黑魔幻风格', '游戏商城资产标准'],
+        style_weight: [0.70, 0.20, 0.10],
+        visual_mood: '冰冷威严, 力量感十足',
+        medium: 'Unreal Engine 5 Nanite & Lumen Render'
+      },
+      skill_03_camera_param: {
+        light: '冷青发光符文自发光 + 纯净顶面棚拍光 + 金属倒角边缘轮廓光',
+        color_tone: '深邃黑曜石色调与冰霜青蓝辉光',
+        camera: 'Orthographic Asset Studio Camera',
+        composition: '居中对角线动态构图, 纯白底通道隔离',
+        lens_focal: '100mm Macro Telephoto (Zero Distortion)',
+        aperture: 'f/8 全景深锐利'
+      },
+      skill_04_scene_content: {
+        subject: '一把散发冰蓝寒气的上古符文双手阔剑，剑身刻有发光卢恩铭文，护手镶嵌龙鳞，剑脊呈大马士革锻打纹理。',
+        background: '纯净无影中性白底，便于引擎通道Alpha抠图与材质贴图解算。',
+        action: '悬浮倾斜展示姿态，符文微粒环绕剑刃缓慢逸散。',
+        foreground: '无遮挡，边缘轮廓锐利清晰。',
+        environment: '次世代3D游戏道具库资产展示台。'
+      },
+      skill_05_detail_desc: {
+        detail: '金属刀刃具备微米级磨损与划痕高光贴图，皮革缠柄缝线历历在目，符文发光处带有菲涅尔辉光。',
+        emotion: '史诗装备的凛冽霸气与不可侵犯之感。',
+        textures: 'Albedo, Normal, Roughness, Metallic, Emissive, Ambient Occlusion',
+        attire_or_props: '双手符文阔剑'
+      },
+      skill_07_game_asset: {
+        asset_type: '3d_prop',
+        asset_category_zh: '3D史诗符文武器道具',
+        engine_target: 'Unreal Engine 5.4 / Unity 6',
+        perspective_view: '单品隔离多视角 / 纯色背景道具展示 (Isolated 3D Prop)',
+        texture_pbr_maps: ['Albedo/BaseColor', 'Normal Map', 'Roughness', 'Metallic', 'Emissive', 'AO'],
+        art_style: '次世代PBR写实 / 暗黑魔幻 (Dark Fantasy PBR)',
+        background_treatment: '纯净隔离背景 / 便于通道抠图 (Solid White Isolation)',
+        game_genre_fit: 'ARPG / 开放世界魂类 / 动作冒险',
+        prompt_modifiers: 'game asset, 3d weapon prop, isolated on white background, PBR material, unreal engine 5 render, clean studio lighting, asset store quality, 8k'
+      },
+      skill_06_prompt_generate: {
+        positive: 'masterpiece, ultra-sharp focus, game asset, 3d weapon prop, epic two-handed greatsword with ancient glowing runes, floating dynamically, isolated on solid clean white background, game ready asset, illuminated by cool cyan emissive glow and rim lighting, metallic reflection, intricate Damascus steel blade etchings, dark obsidian hilt, Unreal Engine 5 render, Nanite, Lumen, PBR materials, asset store quality, 8k uhd',
+        negative: 'deformed, blurry, bad anatomy, low quality, pixelated, washed out, watermark, noisy background, text',
+        target_model: 'Z-Image Turbo',
+        suggested_params: {
+          cfg_scale: 3.0,
+          steps: 20,
+          sampler: 'res_multistep',
+          aspect_ratio: '1:1'
+        }
+      }
+    }
   }
 ];

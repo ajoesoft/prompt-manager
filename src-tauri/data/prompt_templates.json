@@ -1,0 +1,114 @@
+[
+  {
+    "id": "krea2_turbo",
+    "model_name": "KREA 2 TURBO",
+    "display_name": "KREA 2 TURBO (实时流式极速)",
+    "badge_color": "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    "syntax_guide": "高浓缩自然语言 + 核心美学流派 + 强视觉冲击光影，专为实时生图流式生成调优",
+    "template_pos": "{style_list}, {subject}, {action}, in {background}, {light}, {camera}, {detail}, {visual_mood}, 8k resolution, cinematic masterpiece",
+    "template_neg": "blurry, low quality, distortion, bad anatomy, duplicate, artifact, deformed limbs, watermark, text",
+    "default_params": {
+      "cfg_scale": 2.0,
+      "steps": 8,
+      "sampler": "Euler A"
+    }
+  },
+  {
+    "id": "z_image_turbo",
+    "model_name": "z image-turbo",
+    "display_name": "Z-Image Turbo (极致超快生图)",
+    "badge_color": "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20",
+    "syntax_guide": "极简紧凑主体 + 动态构图标签 + 8k uhd, masterpiece 语法，极快响应并保留超强细节",
+    "template_pos": "masterpiece, ultra-sharp focus, {subject}, {action}, dynamic {composition}, backdrop of {background}, illuminated by {light}, {color_tone}, {detail}, {style_list}, 8k uhd",
+    "template_neg": "deformed, blurry, bad anatomy, extra limbs, low quality, pixelated, washed out, watermark, text",
+    "default_params": {
+      "cfg_scale": 2.5,
+      "steps": 10,
+      "sampler": "DPM++ 2M Turbo"
+    }
+  },
+  {
+    "id": "qwen_image_2512",
+    "model_name": "qwen-image-2512",
+    "display_name": "Qwen-Image 2512 (通义万相旗舰)",
+    "badge_color": "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    "syntax_guide": "中英双语高保真多模态提示词，极擅长国风仙侠修仙、东方玄幻、二次元精细画风与逼真写实人物",
+    "template_pos": "高画质电影级画面，{subject}，正在{action}，身处{background}，宏观背景呈现{environment}。光影效果采用{light}，整体色调为{color_tone}，镜头构图为{composition}，微观细节表现出{detail}。整体风格呈现{style_list}，视觉氛围充满{visual_mood}。masterpiece, highly detailed, 8k resolution.",
+    "template_neg": "画面模糊，低画质，肢体畸变，多余手指，色彩过曝，噪点过大，水印文字",
+    "default_params": {
+      "cfg_scale": 6.5,
+      "steps": 30,
+      "sampler": "FlowMatchEuler"
+    }
+  },
+  {
+    "id": "flux2",
+    "model_name": "flux2",
+    "display_name": "FLUX.2 / FLUX.1 (纯自然长句)",
+    "badge_color": "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
+    "syntax_guide": "纯自然长句叙述，无需负面提示词，对复杂场景空间、镜头硬件与真实物理质感还原极佳",
+    "template_pos": "A cinematic high-resolution visual capture of {subject} who is {action}. The scene takes place in {background}, characterized by {environment}. Shot on {camera} with {lens_focal} and {aperture}, illuminated with {light}. The color grading exhibits {color_tone}, revealing fine details such as {detail}. The overall aesthetic embodies {style_list} with a {visual_mood} mood.",
+    "template_neg": "",
+    "default_params": {
+      "cfg_scale": 3.5,
+      "steps": 28,
+      "sampler": "Euler"
+    }
+  },
+  {
+    "id": "stable_diffusion_3",
+    "model_name": "stable diffusion 3",
+    "display_name": "Stable Diffusion 3 / 3.5 (SD3)",
+    "badge_color": "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
+    "syntax_guide": "T5-XXL 长文本语义 + CLIP 关键词权重融合，色彩与构图控制力极高",
+    "template_pos": "cinematic photography of {subject}, {action}, set in {background}, {environment}, natural {light}, {color_tone} grading, captured on {camera}, {detail}, {style_list} style, {visual_mood} atmosphere, award winning, masterpiece, 8k",
+    "template_neg": "ugly, disfigured, low quality, blurry, deformed hands, extra fingers, cartoonish artifacts, poor lighting",
+    "default_params": {
+      "cfg_scale": 4.5,
+      "steps": 28,
+      "sampler": "FlowMatchEuler"
+    }
+  },
+  {
+    "id": "sdxl",
+    "model_name": "SDXL 1.0",
+    "display_name": "Stable Diffusion XL (SDXL 1.0)",
+    "badge_color": "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20",
+    "syntax_guide": "Danbooru 标签 + 镜头器材权重 + 质量增强修饰词 + 丰富负向过滤词",
+    "template_pos": "(masterpiece, best quality, ultra-detailed:1.2), {subject}, {action}, {style_weighted}, {background}, {camera}, {light}, {composition}, {detail}, intricate textures, hyperrealistic, 8k uhd, dslr:1.1",
+    "template_neg": "canvas frame, cartoon, 3d, sketch, anime, bad hands, bad eyes, cropped, bad proportions, bad art, monochrome, ugly, worst quality, low quality, normal quality, lowres, extra limbs, watermark",
+    "default_params": {
+      "cfg_scale": 7.0,
+      "steps": 30,
+      "sampler": "DPM++ 2M Karras"
+    }
+  },
+  {
+    "id": "midjourney_v6",
+    "model_name": "Midjourney v6.1",
+    "display_name": "Midjourney v6.1",
+    "badge_color": "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    "syntax_guide": "优美艺术概念短语 + 摄影术语 + --ar --v 6.1 --style raw 参数",
+    "template_pos": "{style_list} aesthetic of {subject}, {action}, in the backdrop of {background}, {light}, cinematic color grading with {color_tone}, {camera}, {detail}, highly atmospheric --ar 16:9 --v 6.1 --style raw --c 5",
+    "template_neg": "--no blurry, deformed, cartoonish, low resolution, bad hands, oversaturated",
+    "default_params": {
+      "cfg_scale": 6.0,
+      "steps": 25,
+      "sampler": "Midjourney Internal"
+    }
+  },
+  {
+    "id": "ltx_video",
+    "model_name": "LTX Video",
+    "display_name": "LTX Video (视频分镜动态)",
+    "badge_color": "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20",
+    "syntax_guide": "强调镜头运动 (Pan/Tilt/Zoom) + 连续时间动态 + 物理光影流转",
+    "template_pos": "Cinematic video sequence: camera slowly tracks around {subject} as they {action}. In the background, {background}. Dramatic {light} shifts, highly consistent motion, photorealistic {style_list} rendering, film grain.",
+    "template_neg": "static frame, stuttering, flickering, morphing, sudden camera cuts, watermark",
+    "default_params": {
+      "cfg_scale": 4.0,
+      "steps": 35,
+      "sampler": "FlowMatchEuler"
+    }
+  }
+]

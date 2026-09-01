@@ -1,0 +1,179 @@
+{
+  "title": "提示词反推系统｜图像多维度分类树",
+  "version": "2.0",
+  "description": "采用独立多维度架构（主体内容 / 视觉媒介 / 题材世界观 / 商业用途 / 构图镜头 / 光影色彩 / 情绪氛围），各维度正交自由组合，支持多模态大模型独立识别与结构化打标输出。",
+  "dimensions": [
+    {
+      "dim_id": "dim_1_subject",
+      "name_zh": "主体内容维度",
+      "name_en": "Subject Content Dimension",
+      "required": true,
+      "categories": [
+        {
+          "main_category": "人物类",
+          "sub_categories": ["单人", "多人/群像", "人像特写（面部/五官）", "人体/体态", "虚拟人形（AI数字人、精灵、魔物、神佛）"]
+        },
+        {
+          "main_category": "景物环境类",
+          "sub_categories": ["自然风景（山川/湖海/森林/星空/云海/极光）", "城市建筑（都市/老街/古建筑/未来城/废墟）", "室内场景（居家/办公室/酒吧/宫殿/船舱）", "微观景物（花草/昆虫/水滴/矿石）"]
+        },
+        {
+          "main_category": "物品产品类",
+          "sub_categories": ["服饰鞋包（服装、首饰、帽子、箱包）", "数码电器", "食品饮品", "工业器械/交通工具", "文创摆件、武器道具"]
+        },
+        {
+          "main_category": "生物动物类",
+          "sub_categories": ["现实动物", "幻想生物（神兽、异兽、怪物、机甲兽）", "植物"]
+        },
+        {
+          "main_category": "抽象图形类",
+          "sub_categories": ["抽象艺术、几何图形", "纹理材质（布料、金属、木纹、磨砂）", "符号文字、图标LOGO"]
+        },
+        {
+          "main_category": "综合复合场景",
+          "sub_categories": ["多主体混合（如人群+城市、角色+神兽坐骑）"]
+        }
+      ]
+    },
+    {
+      "dim_id": "dim_2_style",
+      "name_zh": "视觉媒介/画风维度",
+      "name_en": "Visual Medium & Style Dimension",
+      "required": true,
+      "categories": [
+        {
+          "main_category": "写实类",
+          "sub_categories": ["照片写实（相机实拍、人像摄影、风光摄影）", "超写实/照片级渲染", "纪实质感"]
+        },
+        {
+          "main_category": "2D手绘类",
+          "sub_categories": ["动画（二次元番剧、TV动画）", "漫画（黑白漫、彩漫、条漫）", "插画（平涂、厚涂、水彩、油画、素描、国风工笔）", "像素画"]
+        },
+        {
+          "main_category": "3D渲染类",
+          "sub_categories": ["3D写实渲染", "3D卡通（Q版、三渲二）", "虚幻引擎UE/Blender渲染", "黏土/手办质感"]
+        },
+        {
+          "main_category": "艺术特效类",
+          "sub_categories": ["赛璐璐", "水墨/国风写意", "油画/水粉/丙烯", "版画/浮世绘", "噪点胶片、复古颗粒"]
+        },
+        {
+          "main_category": "混合媒介",
+          "sub_categories": ["2D+3D混合渲染", "综合材料拼接", "照片转插画混合"]
+        }
+      ]
+    },
+    {
+      "dim_id": "dim_3_worldview",
+      "name_zh": "题材世界观/时代背景维度",
+      "name_en": "Genre & Worldview Dimension",
+      "required": true,
+      "categories": [
+        {
+          "main_category": "现实向",
+          "sub_categories": ["现代都市", "近代复古（民国、80/90年代复古）", "古风古代（秦汉/唐宋/明清）", "近现代历史"]
+        },
+        {
+          "main_category": "幻想向",
+          "sub_categories": ["修仙/仙侠（国风玄幻修仙、修真、仙门）", "玄幻（东方奇幻、妖魔鬼怪、洪荒）", "科幻（未来、星际、赛博朋克、废土、机甲）", "奇幻西幻（魔法、骑士、精灵、中世纪欧式）", "末世、克苏鲁、平行世界"]
+        },
+        {
+          "main_category": "架空小众题材",
+          "sub_categories": ["蒸汽朋克", "日式和风", "中世纪欧式", "乌托邦"]
+        },
+        {
+          "main_category": "无特定世界观",
+          "sub_categories": ["纯静物", "纯纹理"]
+        }
+      ]
+    },
+    {
+      "dim_id": "dim_4_commercial",
+      "name_zh": "商业用途维度",
+      "name_en": "Commercial Purpose Dimension",
+      "required": true,
+      "categories": [
+        {
+          "main_category": "影视类",
+          "sub_categories": ["电影镜头（院线电影质感、电影分镜）", "短剧镜头", "影视剧海报", "影视概念原画"]
+        },
+        {
+          "main_category": "游戏类",
+          "sub_categories": ["游戏原画（角色原画、场景原画）", "游戏CG", "游戏UI、图标", "游戏实机截图"]
+        },
+        {
+          "main_category": "广告商业图",
+          "sub_categories": ["商品主图", "品牌海报、宣传banner", "电商穿搭图（服装模特）", "商业人像（模特、形象照）"]
+        },
+        {
+          "main_category": "文创出版",
+          "sub_categories": ["小说封面", "绘本插图", "表情包"]
+        },
+        {
+          "main_category": "个人创作",
+          "sub_categories": ["同人创作", "艺术习作", "头像壁纸"]
+        },
+        {
+          "main_category": "素材通用图",
+          "sub_categories": ["设计底图", "贴图纹理", "背景素材"]
+        }
+      ]
+    },
+    {
+      "dim_id": "dim_5_composition",
+      "name_zh": "构图&镜头维度",
+      "name_en": "Composition & Camera Shot",
+      "required": true,
+      "categories": [
+        {
+          "main_category": "镜头景别",
+          "sub_categories": ["特写", "近景", "中景", "全景", "远景", "航拍"]
+        },
+        {
+          "main_category": "镜头视角",
+          "sub_categories": ["平视", "仰拍", "俯拍", "鱼眼", "微距", "上帝视角"]
+        },
+        {
+          "main_category": "构图形式",
+          "sub_categories": ["中心构图", "三分构图", "对称构图", "框架构图", "引导线构图"]
+        },
+        {
+          "main_category": "画面动态",
+          "sub_categories": ["静态", "动态模糊", "高速抓拍", "运动轨迹"]
+        }
+      ]
+    },
+    {
+      "dim_id": "dim_6_lighting",
+      "name_zh": "光影色彩维度",
+      "name_en": "Lighting & Color Dynamics",
+      "required": true,
+      "categories": [
+        {
+          "main_category": "光照形式",
+          "sub_categories": ["自然光", "柔光", "硬光", "轮廓光", "逆光", "丁达尔光（光束）", "夜景灯光", "霓虹光", "赛博辉光"]
+        },
+        {
+          "main_category": "色彩倾向",
+          "sub_categories": ["冷色调", "暖色调", "高饱和", "低饱和", "莫兰迪色系", "黑白单色", "赛博朋克撞色"]
+        },
+        {
+          "main_category": "画质光学",
+          "sub_categories": ["高清", "8K超精细", "胶片颗粒", "景深虚化", "焦外光斑", "色差与镜头畸变"]
+        }
+      ]
+    },
+    {
+      "dim_id": "dim_7_mood",
+      "name_zh": "情绪氛围维度",
+      "name_en": "Mood & Atmosphere Dimension",
+      "required": false,
+      "categories": [
+        {
+          "main_category": "氛围情绪",
+          "sub_categories": ["治愈清新", "宏大史诗", "阴郁暗黑", "欢快活泼", "悬疑紧张", "孤寂荒凉", "静谧祥和", "浪漫梦幻", "神秘深邃"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+# stable_diffusion_3.skill
+model_id: "stable_diffusion_3"
+model_name: "stable diffusion 3"
+stage_name: "Stable Diffusion 3 / 3.5 (SD3) 双文本编码器融合提示词格式化输出"
+version: "2.0"
+characteristics:
+  - "T5-XXL 语义长句 + CLIP-L / CLIP-G 关键词加权融合"
+  - "复杂物体排布与空间构图高精确控制"
+  - "极佳的文字排印渲染兼容性"
+template_syntax: "cinematic photography of {subject}, {action}, set in {background}, {environment}, natural {light}, {color_tone} grading, captured on {camera}, {detail}, {style_list} style, {visual_mood} atmosphere, award winning, masterpiece, 8k"
+negative_syntax: "ugly, disfigured, low quality, blurry, deformed hands, extra fingers, cartoonish artifacts, poor lighting"
+default_params:
+  cfg_scale: 4.5
+  steps: 28
+  sampler: "FlowMatchEuler"
+  aspect_ratio: "16:9"

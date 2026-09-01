@@ -5,10 +5,14 @@ import {
   Sparkles,
   AlertCircle,
   X,
-  Play
+  Play,
+  Languages,
+  FolderKanban,
+  Sliders
 } from 'lucide-react';
-import { PromptModelTemplate } from '../types';
+import { PromptModelTemplate, Project, GenerationParams } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
+import { ASPECT_RATIO_OPTIONS, DIMENSION_PRESETS } from '../data/defaultProjects';
 import {
   isTauri,
   listenTauriDragDrop,
@@ -17,22 +21,56 @@ import {
 
 interface ImageDropzoneProps {
   promptTemplates: PromptModelTemplate[];
+  projects?: Project[];
+  activeProject?: Project | null;
+  onSelectProject?: (uuid: string) => void;
+  onOpenProjectModal?: () => void;
   isAnalyzing: boolean;
-  onStartAnalysis: (files: { dataUrl: string; name: string; size: number }[], targetModel: string) => void;
+  onStartAnalysis: (
+    files: { dataUrl: string; name: string; size: number }[],
+    targetModel: string,
+    outputLanguage: 'zh' | 'en',
+    options?: {
+      projectUuid?: string;
+      dimensions?: { width: number; height: number };
+      aspectRatio?: string;
+      generationParams?: GenerationParams;
+    }
+  ) => void;
   onClose?: () => void;
 }
 
 export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
   promptTemplates,
+  projects = [],
+  activeProject,
+  onSelectProject,
+  onOpenProjectModal,
   isAnalyzing,
   onStartAnalysis,
   onClose,
 }) => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [selectedFiles, setSelectedFiles] = useState<{ dataUrl: string; name: string; size: number }[]>([]);
-  const [targetModel, setTargetModel] = useState<string>(promptTemplates[0]?.model_name || 'Krea2 Turbo');
+  const [targetProjectUuid, setTargetProjectUuid] = useState<string>(activeProject?.uuid || projects[0]?.uuid || '');
+  const [targetModel, setTargetModel] = useState<string>(activeProject?.target_model || promptTemplates[0]?.model_name || 'Krea2 Turbo');
+  const [aspectRatio, setAspectRatio] = useState<string>(activeProject?.aspect_ratio || '16:9');
+  const [dimensions, setDimensions] = useState<{ width: number; height: number }>(
+    activeProject?.dimensions || { width: 1344, height: 768 }
+  );
+  const [outputLanguage, setOutputLanguage] = useState<'zh' | 'en'>(lang === 'en' ? 'en' : 'zh');
   const [isDragging, setIsDragging] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Sync with activeProject changes
+  useEffect(() => {
+    if (activeProject) {
+      setTargetProjectUuid(activeProject.uuid);
+      if (activeProject.target_model) setTargetModel(activeProject.target_model);
+      if (activeProject.aspect_ratio) setAspectRatio(activeProject.aspect_ratio);
+      if (activeProject.dimensions) setDimensions(activeProject.dimensions);
+    }
+  }, [activeProject]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef<number>(0);
@@ -246,7 +284,11 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
 
   const handleSubmit = () => {
     if (selectedFiles.length === 0 || isAnalyzing) return;
-    onStartAnalysis(selectedFiles, targetModel);
+    onStartAnalysis(selectedFiles, targetModel, outputLanguage, {
+      projectUuid: targetProjectUuid,
+      dimensions: dimensions,
+      aspectRatio: aspectRatio,
+    });
   };
 
   return (
@@ -288,26 +330,111 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
         )}
       </div>
 
-      {/* Target Model Selector */}
-      <div className="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center space-x-2">
-          <Sparkles className="w-4 h-4 text-amber-500" />
-          <span className="text-xs font-semibold text-slate-700">{t('dropzone.targetSyntax')}:</span>
+      {/* Project & Generation Configuration Bar */}
+      <div className="mt-4 p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+        
+        {/* Row 1: Target Project & Model Selector */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Target Project Selector */}
+          <div className="flex items-center justify-between space-x-2 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-2xs">
+            <div className="flex items-center space-x-2 min-w-0">
+              <FolderKanban className="w-4 h-4 text-blue-600 flex-shrink-0" />
+              <span className="text-xs font-semibold text-slate-700 truncate">归属项目:</span>
+            </div>
+
+            <select
+              value={targetProjectUuid}
+              onChange={(e) => {
+                const pUuid = e.target.value;
+                setTargetProjectUuid(pUuid);
+                const matched = projects.find((p) => p.uuid === pUuid);
+                if (matched) {
+                  if (matched.target_model) setTargetModel(matched.target_model);
+                  if (matched.aspect_ratio) setAspectRatio(matched.aspect_ratio);
+                  if (matched.dimensions) setDimensions(matched.dimensions);
+                }
+              }}
+              className="bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md px-2.5 py-1 text-xs text-blue-700 font-semibold focus:outline-hidden focus:border-blue-500 transition cursor-pointer max-w-[160px] truncate"
+            >
+              {projects.map((p) => (
+                <option key={p.uuid} value={p.uuid}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Target Model Selector */}
+          <div className="flex items-center justify-between space-x-2 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-2xs">
+            <div className="flex items-center space-x-2 min-w-0">
+              <Sparkles className="w-4 h-4 text-purple-600 flex-shrink-0" />
+              <span className="text-xs font-semibold text-slate-700 truncate">{t('dropzone.targetSyntax')}:</span>
+            </div>
+
+            <select
+              value={targetModel}
+              onChange={(e) => setTargetModel(e.target.value)}
+              className="bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md px-2.5 py-1 text-xs text-purple-700 font-semibold focus:outline-hidden focus:border-purple-500 transition cursor-pointer max-w-[160px] truncate"
+            >
+              {promptTemplates.map((t) => (
+                <option key={t.id} value={t.model_name}>
+                  {t.model_name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <select
-            value={targetModel}
-            onChange={(e) => setTargetModel(e.target.value)}
-            className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-blue-700 font-semibold focus:outline-none focus:border-blue-500 shadow-2xs"
-          >
-            {promptTemplates.map((t) => (
-              <option key={t.id} value={t.model_name}>
-                {t.display_name}
-              </option>
-            ))}
-          </select>
+        {/* Row 2: Aspect Ratio & Dimensions & Output Language */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Aspect Ratio & Dimensions */}
+          <div className="flex items-center justify-between space-x-2 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-2xs">
+            <div className="flex items-center space-x-2 min-w-0">
+              <Sliders className="w-4 h-4 text-amber-500 flex-shrink-0" />
+              <span className="text-xs font-semibold text-slate-700 truncate">尺寸比例:</span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <select
+                value={aspectRatio}
+                onChange={(e) => {
+                  const ratio = e.target.value;
+                  setAspectRatio(ratio);
+                  const preset = DIMENSION_PRESETS[ratio] || { width: 1024, height: 1024 };
+                  setDimensions(preset);
+                }}
+                className="bg-slate-50 border border-slate-200 rounded-md px-2 py-1 text-xs font-mono font-semibold text-slate-700 cursor-pointer"
+              >
+                {ASPECT_RATIO_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <span className="text-[11px] text-slate-500 font-mono">
+                {dimensions.width}x{dimensions.height}
+              </span>
+            </div>
+          </div>
+
+          {/* Output Language Selector */}
+          <div className="flex items-center justify-between space-x-2 bg-white px-3 py-2 rounded-lg border border-slate-200 shadow-2xs">
+            <div className="flex items-center space-x-2 min-w-0">
+              <Languages className="w-4 h-4 text-blue-600 flex-shrink-0" />
+              <span className="text-xs font-semibold text-slate-700 truncate">{t('dropzone.outputLanguage')}:</span>
+            </div>
+
+            <select
+              value={outputLanguage}
+              onChange={(e) => setOutputLanguage(e.target.value as 'zh' | 'en')}
+              className="bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md px-2.5 py-1 text-xs text-blue-700 font-semibold focus:outline-hidden focus:border-blue-500 transition cursor-pointer"
+            >
+              <option value="zh">{t('dropzone.langZh')}</option>
+              <option value="en">{t('dropzone.langEn')}</option>
+            </select>
+          </div>
         </div>
+
       </div>
 
       {/* Dropzone Area */}

@@ -1,0 +1,16 @@
+# ltx_video.skill
+model_id: "ltx_video"
+model_name: "LTX Video (视频生成)"
+stage_name: "LTX Video / SVD 动态运镜与时序动作专有提示词格式化输出"
+version: "2.0"
+characteristics:
+  - "时序动作连续性描述 (motion dynamic)"
+  - "电影运镜指令 (Tracking shot / Slow Pan / Crane zoom)"
+  - "物理规律与粒子流体交互"
+template_syntax: "Cinematic camera movement: slow tracking forward. {subject} is actively {action}, set in {background} with dynamic atmospheric particles. The lighting features {light}, captured in {camera} style, high temporal coherence, photorealistic motion, 4k 60fps."
+negative_syntax: "static, jump cuts, jerky motion, morphing distortions, flickering, watermarks"
+default_params:
+  cfg_scale: 3.0
+  steps: 30
+  sampler: "Euler Video"
+  aspect_ratio: "16:9"
